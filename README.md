@@ -295,6 +295,7 @@ postMessage
 </body>
 </html>
 
+http://lslib.com/lslib.html
 <!doctype html>
 <html>
     <head>
@@ -331,8 +332,6 @@ postMessage
         </script>
     </body>
 </html>
-
-http://lslib.com/lslib.html
 
 （来自：http://www.cnblogs.com/dolphinX/p/3464056.html）
 
