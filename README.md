@@ -235,4 +235,4 @@ http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance4.jpg
 (出自：http://blog.jobbole.com/19795/)
 
 #跨域
-一.JSONP
+JSONP
