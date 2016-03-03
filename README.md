@@ -2,20 +2,9 @@
 理解：1.在function内var一个变量，function外部是无法访问到该变量，闭包搭建了一个桥梁，让函数外能够访问内部变量。2.闭包访问的变量会保存在内存之中。3.同个声明的两个闭包之间没有关联。
 
 function f1(){
-
-　　var n=999;
-　　
-　　nAdd=function(){n+=1}
-　　
-　　function f2(){
-　　
-　　　　alert(n);
-　　　　
-　　}
-　　
-　　return f2;
-　　
+    
 }
+
 var result=f1();
 
 result(); // 999
