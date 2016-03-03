@@ -235,4 +235,105 @@ http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance4.jpg
 (出自：http://blog.jobbole.com/19795/)
 
 #跨域
+
 JSONP
+
+利用在页面中创建<script>节点的方法向不同域提交HTTP请求的方法称为JSONP，这项技术可以解决跨域提交Ajax请求的问题。JSONP的工作原理如下所述：
+
+假设在http://example1.com/index.php这个页面中向http://example2.com/getinfo.php提交GET请求，我们可以将下面的JavaScript代码放在http://example1.com/index.php这个页面中来实现：
+
+var eleScript= document.createElement("script");
+
+eleScript.type = "text/javascript";
+
+eleScript.src = "http://example2.com/getinfo.php";
+
+document.getElementsByTagName("head")[0].appendChild(eleScript);
+
+当GET请求从http://example2.com/getinfo.php返回时，可以返回一段JavaScript代码，这段代码会自动执行，可以用来负责调用http://example1.com/index.php页面中的一个callback函数。
+
+JSONP的优点是：它不像XMLHttpRequest对象实现的Ajax请求那样受到同源策略的限制；它的兼容性更好，在更加古老的浏览器中都可以运行，不需要XMLHttpRequest或ActiveX的支持；并且在请求完毕后可以通过调用callback的方式回传结果。
+
+JSONP的缺点则是：它只支持GET请求而不支持POST等其它类型的HTTP请求；它只支持跨域HTTP请求这种情况，不能解决不同域的两个页面之间如何进行JavaScript调用的问题。
+
+Jsonp的执行过程如下：
+
+首先在客户端注册一个callback (如:'jsoncallback'), 然后把callback的名字(如:jsonp1236827957501)传给服务器。注意：服务端得到callback的数值后，要用jsonp1236827957501(......)把将要输出的json内容包括起来，此时，服务器生成 json 数据才能被客户端正确接收。
+
+然后以 javascript 语法的方式，生成一个function， function 名字就是传递上来的参数 'jsoncallback'的值 jsonp1236827957501 .
+
+最后将 json 数据直接以入参的方式，放置到 function 中，这样就生成了一段 js 语法的文档，返回给客户端。
+
+客户端浏览器，解析script标签，并执行返回的 javascript 文档，此时javascript文档数据，作为参数， 传入到了客户端预先定义好的 callback 函数(如上例中jquery $.ajax()方法封装的的success: function (json))里。
+
+postMessage
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Post Message</title>
+</head>
+<body>
+    <div style="width:200px; float:left; margin-right:200px;border:solid 1px #333;">
+        <div id="color">Frame Color</div>
+    </div>
+    <div>
+        <iframe id="child" src="http://lsLib.com/lsLib.html"></iframe>
+    </div>
+
+    <script type="text/javascript">
+
+        window.onload=function(){
+            window.frames[0].postMessage('getcolor','http://lslib.com');
+        }
+
+        window.addEventListener('message',function(e){
+            var color=e.data;
+            document.getElementById('color').style.backgroundColor=color;
+        },false);
+    </script>
+</body>
+</html>
+
+<!doctype html>
+<html>
+    <head>
+        <style type="text/css">
+            html,body{
+                height:100%;
+                margin:0px;
+            }
+        </style>
+    </head>
+    <body style="height:100%;">
+        <div id="container" onclick="changeColor();" style="widht:100%; height:100%; background-color:rgb(204, 102, 0);">
+            click to change color
+        </div>
+        <script type="text/javascript">
+            var container=document.getElementById('container');
+
+            window.addEventListener('message',function(e){
+                if(e.source!=window.parent) return;
+                var color=container.style.backgroundColor;
+                window.parent.postMessage(color,'*');
+            },false);
+
+            function changeColor () {            
+                var color=container.style.backgroundColor;
+                if(color=='rgb(204, 102, 0)'){
+                    color='rgb(204, 204, 0)';
+                }else{
+                    color='rgb(204,102,0)';
+                }
+                container.style.backgroundColor=color;
+                window.parent.postMessage(color,'*');
+            }
+        </script>
+    </body>
+</html>
+
+http://lslib.com/lslib.html
+
+（来自：http://www.cnblogs.com/dolphinX/p/3464056.html）
+
+
