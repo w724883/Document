@@ -1,34 +1,73 @@
+Markdown 语法速查表
+
+# 这是 H1 <一级标题>
+
+## 这是 H2 <二级标题>
+
+###### 这是 H6 <六级标题>
+
+**这是文字粗体格式**
+
+*这是文字斜体格式*
+
+~~在文字上添加删除线~~
+
+无序列表
+
+* 项目1
+* 项目2
+* 项目3
+
+有序列表
+
+1. 项目1
+2. 项目2
+3. 项目3
+   * 项目1
+   * 项目2
+
+图片
+![图片名称](https://www.baidu.com/img/baidu_jgylogo3.gif)
+
+链接
+[链接名称](https://www.baidu.com)
+
+引用
+
+> 第一行引用文字
+> 第二行引用文字
+
+水平线
+***
+
+高亮
+`<hello world>`
+
+代码块高亮
+```javascript
+    function a(){
+        var _a = 1;
+    }
+```
+
 #闭包
 理解：1.在function内var一个变量，function外部是无法访问到该变量，闭包搭建了一个桥梁，让函数外能够访问内部变量。2.闭包访问的变量会保存在内存之中。3.同个声明的两个闭包之间没有关联。
-
+```javascript
 function f1(){
-    
-        var n=999;
-    
+    var n=999;
     nAdd=function(){
-    
         n+=1;
-        
     }
-    
     function f2(){
-    
         alert(n);
-        
     }
-    
     return f2;
-    
 }
-
-var result=f1();
-
+var result = f1();
 result(); // 999
-
 nAdd();
-
 result(); // 1000
-
+```
 在这段代码中，result实际上就是闭包f2函数。它一共运行了两次，第一次的值是999，第二次的值是1000。这证明了，函数f1中的局部变量n一直保存在内存中，并没有在f1调用后被自动清除。
 为什么会这样呢？原因就在于f1是f2的父函数，而f2被赋给了一个全局变量，这导致f2始终在内存中，而f2的存在依赖于f1，因此f1也始终在内存中，不会在调用结束后，被垃圾回收机制（garbage collection）回收。
 这段代码中另一个值得注意的地方，就是nAdd=function(){n+=1}这一行，首先在nAdd前面没有使用var关键字，因此 nAdd是一个全局变量，而不是局部变量。其次，nAdd的值是一个匿名函数（anonymous function），而这个
@@ -47,7 +86,7 @@ function A() {};
 
 3、创建变量A，同时把函数的引用赋值给变量A
 
-http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance.jpg
+![函数创建过程](http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance.jpg)
 
 二、构造函数
 
@@ -59,7 +98,7 @@ http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance.jpg
 
 根据前面空函数的创建图示，我们知道每个函数在创建的时候都自动添加了prototype属性，这就是函数的原型，从图中可知其实质就是对一个对象的引用（这个对象暂且取名原型对象）。
 围绕刚才创建的空函数，这次给空函数增加一些代码：
-
+```javascript
 function A() {
 
  this.width = 10;
@@ -79,10 +118,11 @@ function A() {
  alert("hello world")
  
  }
- 
+```
+
 根据“函数创建”过程，图解如下：
 
-http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance2.jpg
+![函数创建过程](http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance2.jpg)
 
 简单说原型就是函数的一个属性，在函数的创建过程中由js编译器自动添加。
 
@@ -103,7 +143,7 @@ var a2 = new A;
 
 其结构图示如下：
 
-http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance3.jpg
+![函数创建过程](http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance3.jpg)
 
 从图中看到，无论是对象a1还是a2，都有一个属性保存了对函数A的原型对象的引用，对于这些对象来说，一些公用的方法可以在函数的原型中找到，节省了内存空间。
 
@@ -170,6 +210,7 @@ B.prototype = new A();
 
 但是注意，这样B产生的对象的构造函数发生了改变，因为在B中没有constructor属性，只能从原型链找到A.prototype，读出constructor:A
 
+```javascript
 var b = new B;
 
 console.log(b.constructor);
@@ -227,10 +268,10 @@ console.log(b.data);
 //这个时候B的原型变成了{constructor : B , [[Prototype]] : F.prototype}
 
 //这样就实现了B对A的原型继承
+```
 
 图示如下，其中红色部分代表原型链：
-
-http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance4.jpg
+![函数创建过程](http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance4.jpg)
 
 (出自：http://blog.jobbole.com/19795/)
 
@@ -238,10 +279,10 @@ http://jbcdn2.b0.upaiyun.com/2012/05/JavaScript-prototypes-and-inheritance4.jpg
 
 JSONP
 
-利用在页面中创建<script>节点的方法向不同域提交HTTP请求的方法称为JSONP，这项技术可以解决跨域提交Ajax请求的问题。JSONP的工作原理如下所述：
+利用在页面中创建<script>节点的方法向不同域提交HTTP请求的方法称为JSONP，这项技术可以解决跨域提交Ajax请求的问题。JSONP的工作原理如下所述
 
 假设在http://example1.com/index.php这个页面中向http://example2.com/getinfo.php提交GET请求，我们可以将下面的JavaScript代码放在http://example1.com/index.php这个页面中来实现：
-
+```javascript
 var eleScript= document.createElement("script");
 
 eleScript.type = "text/javascript";
@@ -249,7 +290,7 @@ eleScript.type = "text/javascript";
 eleScript.src = "http://example2.com/getinfo.php";
 
 document.getElementsByTagName("head")[0].appendChild(eleScript);
-
+```
 当GET请求从http://example2.com/getinfo.php返回时，可以返回一段JavaScript代码，这段代码会自动执行，可以用来负责调用http://example1.com/index.php页面中的一个callback函数。
 
 JSONP的优点是：它不像XMLHttpRequest对象实现的Ajax请求那样受到同源策略的限制；它的兼容性更好，在更加古老的浏览器中都可以运行，不需要XMLHttpRequest或ActiveX的支持；并且在请求完毕后可以通过调用callback的方式回传结果。
@@ -266,8 +307,8 @@ Jsonp的执行过程如下：
 
 客户端浏览器，解析script标签，并执行返回的 javascript 文档，此时javascript文档数据，作为参数， 传入到了客户端预先定义好的 callback 函数(如上例中jquery $.ajax()方法封装的的success: function (json))里。
 
-postMessage
-
+`postMessage`
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -294,8 +335,10 @@ postMessage
     </script>
 </body>
 </html>
+```
 
 http://lslib.com/lslib.html
+```javascript
 <!doctype html>
 <html>
     <head>
@@ -332,7 +375,7 @@ http://lslib.com/lslib.html
         </script>
     </body>
 </html>
-
+```
 （来自：http://www.cnblogs.com/dolphinX/p/3464056.html）
 
 
