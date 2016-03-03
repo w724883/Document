@@ -1,4 +1,4 @@
-Markdown 语法速查表
+`Markdown 语法速查表`
 
 # 这是 H1 <一级标题>
 
@@ -277,7 +277,7 @@ console.log(b.data);
 
 #跨域
 
-JSONP
+`JSONP`
 
 利用在页面中创建<script>节点的方法向不同域提交HTTP请求的方法称为JSONP，这项技术可以解决跨域提交Ajax请求的问题。JSONP的工作原理如下所述
 
