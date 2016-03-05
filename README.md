@@ -544,3 +544,20 @@ document.domain = 'a.com';
 1、安全性，当一个站点（b.a.com）被攻击后，另一个站点（c.a.com）会引起安全漏洞。
 2、如果一个页面中引入多个iframe，要想能够操作所有iframe，必须都得设置相同domain。
 （来自：http://www.cnblogs.com/rainman/archive/2011/02/20/1959325.html）
+
+#Object.create()
+
+Object.create(prototype [, propertiesObject ])
+prototype是要创建对象的原型，如果不是子函数则设为null
+propertiesObject是要创建对象的属性描述
+如：
+Object.create
+
+```javascript
+Object.create = function (o) {
+         var F = function () {};
+         F.prototype = o;
+         return new F();
+     };
+var b=Object.create(a);
+```
