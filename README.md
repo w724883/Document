@@ -73,6 +73,26 @@ result(); // 1000
 这段代码中另一个值得注意的地方，就是nAdd=function(){n+=1}这一行，首先在nAdd前面没有使用var关键字，因此 nAdd是一个全局变量，而不是局部变量。其次，nAdd的值是一个匿名函数（anonymous function），而这个
 匿名函数本身也是一个闭包，所以nAdd相当于是一个setter，可以在函数外部对函数内部的局部变量进行操作。
 
+如果返回值是一个对象，那么this指向的就是那个返回的对象，如果返回值不是一个对象那么this还是指向函数的实例。
+```javascript
+function fn()  
+{  
+    this.user = 'user';  
+    return undefined; //除object,function以外包括null
+}
+var a = new fn;  
+console.log(a.user); //user
+
+function fn()  
+{  
+    this.user = 'user';  
+    return {};  //object或function
+}
+var a = new fn;  
+console.log(a.user); //undefined
+```
+
+
 #原型
 一、函数创建过程
 
