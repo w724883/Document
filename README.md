@@ -277,7 +277,7 @@ console.log(b.data);
 
 #跨域
 
-`JSONP`
+###JSONP
 
 利用在页面中创建script节点的方法向不同域提交HTTP请求的方法称为JSONP，这项技术可以解决跨域提交Ajax请求的问题。JSONP的工作原理如下所述
 
@@ -307,7 +307,7 @@ Jsonp的执行过程如下：
 
 客户端浏览器，解析script标签，并执行返回的 javascript 文档，此时javascript文档数据，作为参数， 传入到了客户端预先定义好的 callback 函数(如上例中jquery $.ajax()方法封装的的success: function (json))里。
 
-`postMessage`
+###postMessage
 ```html
 <!DOCTYPE html>
 <html>
@@ -378,4 +378,169 @@ http://lslib.com/lslib.html
 ```
 （来自：http://www.cnblogs.com/dolphinX/p/3464056.html）
 
+###iframe
+![iframe跨域](http://files.jb51.net/file_images/article/201302/2013020117295679.png)
+要实现域a.com的request.html请求域b.com的process.php，可以将请求的参数通过URL传给response.html，由response.html向process.php发出真正的ajax请求（response.html与process.php都属于域b.com），然后将返回的结果通过URL传给proxy.html，最后由于proxy.html与request.html是在同一域下，所以可以在proxy.html利用window.top将结果返回给request.html完成跨域通信。
 
+整个流程的思路其实非常清晰，真正的ajax请求并不是发生在域a.com，而是发生在域b.com；而域a.com是做了两件事，第一件事是由request.html完成，向域b.com发送传入参数；第二件事由proxy.html完成，把域b.com的响应数据递回给request.html。
+![跨域访问流程图](http://files.jb51.net/file_images/article/201302/2013020117295680.png)
+
+先看文档结构：
+http://a.com/
+request.html
+proxy.html
+http://b.com/
+response.html
+process.php
+
+1、先来看request.html
+```html
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+<title>该页面的路径是：http://a.com/request.html</title> 
+</head> 
+<body> 
+<p id="result">这里将会填上响应的结果</p> 
+<a id="sendBtn" href="javascript:void(0)">点击，发送跨域请求</a> 
+<iframe id="serverIf"></iframe> 
+<script type="text/javascript"> 
+document.getElementById("sendBtn").onclick = function() { 
+var url = "http://b.com/response.html"; 
+var fn = "GetPerson";//这是定义在response.html的方法 
+var reqdata = '{"id" : 24}';//这是请求的参数 
+var callback = "CallBack";//这是请求全过程完成后执行的回调函数，执行最后的动作 
+CrossRequest(url, fn, reqdata, callback);//发送请求 
+} 
+function CrossRequest(url, fn, reqdata, callback) { 
+var server = document.getElementById("serverIf"); 
+server.src = url + "?fn=" + encodeURIComponent(fn) + "&data=" + encodeURIComponent(reqdata) + "&callback=" + encodeURIComponent(callback);//这里由request.html向response.html发送的请求其实就是通过iframe的src将参数与回调方法传给response.html 
+} 
+function CallBack(data) {//回调函数 
+var str = "My name is " + data.name + ". I am a " + data.sex + ". I am " + data.age + " years old."; 
+document.getElementById("result").innerHTML = str; 
+} 
+</script> 
+</body> 
+</html>
+```
+看代码和注释相信都很容易理解，这个页面其实就是要告诉response.html：我要让你执行你定义好的方法GetPerson，并且要用我给你的参数'{"id" : 24}'。可能感到模糊的就是为什么要把CallBack函数传给response.html，这是定义在本页面上的方法，response.html也不能执行它；看接下来的代码就会知道：response.html纯粹是负责将CallBack这个方法名传递给下一位仁兄proxy.html，而proxy.html拿到了CallBack这个方法名就可以执行了，因为proxy.html和request.html是同域的。
+
+2、response.html的代码：
+```html
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+<title>该页面的路径是：http://b.com/response.html</title> 
+</head> 
+<body> 
+<iframe id="proxy"></iframe> 
+<script type="text/javascript"> 
+function _request(reqdata, url, callback) {//通用方法，ajax请求 
+var xmlhttp; 
+if (window.XMLHttpRequest) { 
+xmlhttp = new XMLHttpRequest(); 
+} 
+else { 
+xmlhttp = new ActiveXObject("Microsoft.XMLHTTP"); 
+} 
+xmlhttp.onreadystatechange = function () { 
+if (xmlhttp.readyState == 4 && xmlhttp.status == 200) { 
+var data = xmlhttp.responseText; 
+callback(data); 
+} 
+} 
+xmlhttp.open("POST", url); 
+xmlhttp.setRequestHeader("Content-Type", "application/json; charset=utf-8"); 
+xmlhttp.send(reqdata); 
+} 
+function _getQuery(key) {//通用方法，获取url参数 
+var query = location.href.split("?")[1]; 
+var value = decodeURIComponent(query.split(key + "=")[1].split("&")[0]); 
+return value; 
+} 
+function GetPerson(reqdata, callback) {//向process.php发送ajax请求 
+var url = "process.php"; 
+var fn = function(data) { 
+var proxy = document.getElementById("proxy"); 
+proxy.src = "http://b.com/Proxy.html?data=" + encodeURIComponent(data) + "&callback=" + encodeURIComponent(callback); 
+} 
+_request(reqdata, url, fn); 
+} 
+(function() { 
+var fn = _getQuery("fn"); 
+var reqdata = _getQuery("data"); 
+var callback = _getQuery("callback"); 
+eval(fn + "('" + reqdata +"', '" + callback + "')"); 
+})(); 
+</script> 
+</body> 
+</html>
+```
+这里其实就是接收来自request.html的请求得到请求参数和方法后向服务器process.php发出真正的ajax请求，然后将从服务器返回的数据以及从request.html传过来的回调函数名传递给proxy.html。
+
+3、下process.php的代码：
+```php
+<?php 
+$data = json_decode(file_get_contents("php://input")); 
+header("Content-Type: application/json; charset=utf-8"); 
+echo ('{"id" : ' . $data->id . ', "age" : 24, "sex" : "boy", "name" : "huangxueming"}'); 
+?>
+```
+4、proxy.html：
+```html
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+<title>该页面的路径是：http://a.com/proxy.html</title> 
+</head> 
+<body> 
+<script type="text/javascript"> 
+function _getUrl(key) {//通用方法，获取URL参数 
+var query = location.href.split("?")[1]; 
+var value = decodeURIComponent(query.split(key + "=")[1].split("&")[0]); 
+return value; 
+} 
+(function() { 
+var callback = _getUrl("callback"); 
+var data = _getUrl("data"); 
+eval("window.top." + decodeURIComponent(callback) + "(" + decodeURIComponent(data) + ")"); 
+})() 
+</script> 
+</body> 
+</html>
+这里也是最后一步了，proxy终于拿到了request.html透过response.html传过来的回调函数名以及从response.html直接传过来的响应数据，利用window.top执行request.html里定义的回调函数。
+实际应用中，proxy.html基本上可以是一个通用的代理，无需改动，如果需要用到很多跨域方法，这些方法都可以在域a.com里面加上，而域b.com就相当于定义一些接口供a.com调用，如GetPerson，当然这并不是真正的接口，只是方便理解，打个比方；另外，当然就是要把iframe隐藏起来。
+```
+###domain
+1、document.domain+iframe的设置
+对于主域相同而子域不同的例子，可以通过设置document.domain的办法来解决。具体的做法是可以在http://www.a.com/a.html和http://script.a.com/b.html两个文件中分别加上document.domain = ‘a.com’；然后通过a.html文件中创建一个iframe，去控制iframe的contentDocument，这样两个js文件之间就可以“交互”了。当然这种办法只能解决主域相同而二级域名不同的情况，如果你异想天开的把script.a.com的domian设为alibaba.com那显然是会报错地！代码如下：
+
+www.a.com上的a.html
+```javascript
+document.domain = 'a.com';
+var ifr = document.createElement('iframe');
+ifr.src = 'http://script.a.com/b.html';
+ifr.style.display = 'none';
+document.body.appendChild(ifr);
+ifr.onload = function(){
+    var doc = ifr.contentDocument || ifr.contentWindow.document;
+    // 在这里操纵b.html
+    alert(doc.getElementsByTagName("h1")[0].childNodes[0].nodeValue);
+};
+```
+script.a.com上的b.html
+```javascript
+document.domain = 'a.com';
+```
+这种方式适用于{www.kuqin.com, kuqin.com, script.kuqin.com, css.kuqin.com}中的任何页面相互通信。
+
+备注：某一页面的domain默认等于window.location.hostname。主域名是不带www的域名，例如a.com，主域名前面带前缀的通常都为二级域名或多级域名，例如www.a.com其实是二级域名。 domain只能设置为主域名，不可以在b.a.com中将domain设置为c.a.com。
+
+问题：
+1、安全性，当一个站点（b.a.com）被攻击后，另一个站点（c.a.com）会引起安全漏洞。
+2、如果一个页面中引入多个iframe，要想能够操作所有iframe，必须都得设置相同domain。
+（来自：http://www.cnblogs.com/rainman/archive/2011/02/20/1959325.html）
