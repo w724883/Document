@@ -91,7 +91,7 @@ function fn()
 var a = new fn;  
 console.log(a.user); //undefined
 ```
-
+`在'usestrict'中，this指向undefined而不是window`
 
 #原型
 一、函数创建过程
