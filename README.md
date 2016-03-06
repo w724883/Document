@@ -797,3 +797,5 @@ center：交叉轴的中点对齐。
 baseline: 项目的第一行文字的基线对齐。
 
 stretch：如果项目未设置高度或设为auto，将占满整个容器的高度。
+
+（来自：http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html?utm_source=tuicool）
