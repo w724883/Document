@@ -799,3 +799,118 @@ baseline: 项目的第一行文字的基线对齐。
 stretch：如果项目未设置高度或设为auto，将占满整个容器的高度。
 
 （来自：http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html?utm_source=tuicool）
+
+#Array数组
+`isArray:`
+```javascript
+var isArray = (function () {
+    if (Array.isArray) {
+        return Array.isArray;
+    } 
+    var objectToStringFn = Object.prototype.toString,
+        arrayToStringResult = objectToStringFn.call([]); 
+
+    return function (subject) {
+        return objectToStringFn.call(subject) === arrayToStringResult;
+    };
+}());
+
+var arr = [];
+isArray(arr); // true
+```
+```javascript
+var arr = [1,2,3];
+function isArray( arg ) {
+  if ( typeof arg === "object" && 
+     ( "join" in arg && typeof arg.join === "function" ) &&
+     ( "length" in arg && typeof arg.length === "number" ) ) {
+        return true;
+  }
+  return false;
+}
+```
+push()该方法是向数组末尾添加一个或者多个元素，并返回新的长度。
+
+pop()方法删除数组的最后一个元素，把数组的长度减1，并且返回它被删除元素的值，如果数组变为空，则该方法不改变数组，返回undefine值。
+
+unshift()方法是向数组的开头添加一个或多个元素，并且返回新的长度。
+
+unshift()方法用于把数组的第一个元素从其中删除，并返回被删除的值。如果数组是空的，方法将不进行任何操作，返回undefined的值。
+
+sort()方法对数组的元素做原地的排序，并返回这个数组。
+```javascript
+function ascSort (a, b) {  // a和b是数组中相邻的两个数组项
+    return a - b; 
+    // 如果 return -1, 表示a小于b，a排列在b的前面
+    // 如果 return 1, 表示a大于b,a排列在b的后面
+    // 如果 return 0, 表示a等于b,a和b的位置保持不变
+}
+function desSort (a, b) { // a和b是数组中相邻的两个数组项
+    return b - a;
+    // 如果 return -1, 表示b小于a，b排列在a的前面
+    // 如果 return 1, 表示b大于a, b排列在a的后面
+    // 如果 return 0, 表示 b等于a, b和a的位置保持不变
+}
+```
+随机排序
+```javascript
+var randomArray = [9,0,23,8,3,5];
+
+function randomSort(a, b) {
+    return Math.random() - 0.5;
+}
+
+console.log(randomArray.sort(randomSort));
+```
+对象排序
+```javascript
+function objectSort(property, desc) {
+    //降序排列
+    if (desc) {
+        return function (a, b) {
+            return (a[property] >  b[property]) ? -1 : (a[property] <  b[property]) ? 1 : 0;
+        }   
+    }
+    return function (a, b) {
+        return (a[property] <  b[property]) ? -1 : (a[property] >  b[property]) ? 1 : 0;
+    }
+}
+var myArray = [
+  { "name": "John Doe", "age": 29 }, 
+  { "name": "Anna Smith", "age": 24 }, 
+  { "name": "Peter Jones", "age": 39 }
+]
+
+console.log(myArray.sort(objectSort('name',true))); // 按object中的name的降序排列
+```
+
+reverse()方法相对而言要简单得多，它就是用来颠倒数组中元素的位置，并返回该数组的引用。
+
+concat()方法可以简单的将其理解为合并数组。基于当前数组中的所有项创建一个新数组。
+
+slice()方法它基于当前数组创建一个新数组，而且对原数组也并不会有任何影响。接受一个或两个参数，即要返回项的起始和结束位置。当只给slice()传递一个参数时，该方法返回从该参数指定位置开始到当前数组末尾的所有项。
+
+splice()方法始终会返回一个数组，该数组中包含从原始数组中删除的项（如果没有删除任何项，则返回一个空数组）。第一个参数删除（替换）的起始点，第二个参数是删除（替换的长度），第三个参数列表为可选值，表示替换掉删除的部分。
+
+indexOf()方法从数组的开头（位置为0）开始向后查询。indexOf()方法返回指定数组项在数组中找到的第一索引值。如果通过indexOf()查找指定的数组项在数组中不存在，那么返回的值会是-1。第二个参数表示从该索引部分开始查找，如果为负值则查找到倒数值为止。
+
+lastIndexOf()方法从一个数组中末尾向前查找数组项，并且返回数组项在数组中的索引值，如果不存在，则返回的值是-1。
+
+常用的数组算法
+`数组去重`
+```javascript
+
+```
+```javascript
+
+```
+```javascript
+
+```
+```javascript
+
+``````javascript
+
+``````javascript
+
+```
