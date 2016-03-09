@@ -803,20 +803,12 @@ stretch：如果项目未设置高度或设为auto，将占满整个容器的高
 #Array数组
 `isArray:`
 ```javascript
-var isArray = (function () {
-    if (Array.isArray) {
-        return Array.isArray;
-    } 
-    var objectToStringFn = Object.prototype.toString,
-        arrayToStringResult = objectToStringFn.call([]); 
-
-    return function (subject) {
-        return objectToStringFn.call(subject) === arrayToStringResult;
-    };
-}());
-
-var arr = [];
-isArray(arr); // true
+function isArray(arr){
+  if(Array.isArray){
+    return Array.isArray(arr);
+  }
+  return Object.prototype.toString.call(arr) == '[object Array]';
+}
 ```
 ```javascript
 var arr = [1,2,3];
@@ -897,9 +889,42 @@ indexOf()方法从数组的开头（位置为0）开始向后查询。indexOf()�
 lastIndexOf()方法从一个数组中末尾向前查找数组项，并且返回数组项在数组中的索引值，如果不存在，则返回的值是-1。
 
 常用的数组算法
+
 `数组去重`
 ```javascript
+//产生新数组
+function unique (arr) {
+  var result = []; 
+  for (var i = 0; i < arr.length; i++)
+  {
+    if (result.indexOf(arr[i]) == -1) result.push(arr[i]);
+  }
+  return result;
+}
 
+function unique (arr)
+{
+    var hash = {},result = []; 
+    for(var i = 0; i < arr.length; i++)
+    {
+        if (!hash[arr[i]]) 
+        {
+            hash[arr[i]] = true; 
+            result.push(arr[i]); 
+        }
+    }
+    return result;
+}
+function unique (arr) {
+    arr.sort();
+    var result=[arr[0]];
+    for(var i = 1; i < arr.length; i++){
+        if( arr[i] !== arr[i-1]) {
+            result.push(arr[i]);
+        }
+    }
+    return result;
+}
 ```
 ```javascript
 
@@ -909,7 +934,7 @@ lastIndexOf()方法从一个数组中末尾向前查找数组项，并且返回�
 ```
 ```javascript
 
-``````javascript
+```
 
 ``````javascript
 
