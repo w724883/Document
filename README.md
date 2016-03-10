@@ -889,9 +889,8 @@ indexOf()方法从数组的开头（位置为0）开始向后查询。indexOf()�
 lastIndexOf()方法从一个数组中末尾向前查找数组项，并且返回数组项在数组中的索引值，如果不存在，则返回的值是-1。
 
 常用的数组算法
-
-`数组去重`
 ```javascript
+//数组去重
 //产生新数组
 function unique (arr) {
   var result = []; 
@@ -949,12 +948,23 @@ function shuffle(array) {
 }
 ```
 ```javascript
-<!--数组求交集-->
+//数组求交集
+//利用filter和数组自带的indexOf方法
+array1.filter(function(n) {
+    return array2.indexOf(n) != -1
+});
 ```
 ```javascript
-
+//数组求并集
+function arrayUnique(array1,array2) {
+    var arr = array1.concat(array2);
+    return unique(arr);
+};
 ```
 
-``````javascript
-
+```javascript
+//数组求差集
+//Array.prototype.diff = function(a) {
+//    return this.filter(function(i) {return a.indexOf(i) < 0;});
+//};
 ```
