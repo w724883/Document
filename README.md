@@ -1013,3 +1013,9 @@ var x = 24;
 delete x++;  // true   被删除的是x++的返回值(24)，不是属性，所以返回true
 x;           // 25
 ```
+#一些方法
+`addClass`
+`getElementsByClass`
+`a_bc_def => aBcDef`
+`a(1,2) == a(1)(2) == 3`
+`http&https$xss`
