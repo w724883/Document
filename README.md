@@ -56,26 +56,7 @@
 
 
 
-#Object.create()
 
-Object.create(prototype [, propertiesObject ])
-prototype是要创建对象的原型，如果不是子函数则设为null
-propertiesObject是要创建对象的属性描述
-如：
-```javascript
-function a(){}
-a.prototype.b = {b:1}
-Object.create(a.prototype,{b:1}) //相当于new a()
-```
-如果浏览器不兼容，以下是JavaScript写法：
-```javascript
-Object.create = function (o) {
-         var F = function () {};
-         F.prototype = o;
-         return new F();
-     };
-var b=Object.create(a);
-```
 
 #移动端的touch时间
 当手指触碰屏幕是事件的发生顺序touchstart,touchmove,touchend,touchcancel,click
