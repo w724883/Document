@@ -67,3 +67,5 @@ Object.create = function (o) {
      };
 var b=Object.create(a);
 ```
+#变量
+`let const`遇到作用域结束时立即销毁
