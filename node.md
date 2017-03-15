@@ -1,4 +1,4 @@
-##模块机制
+## 模块机制
 
 - require
 
@@ -38,8 +38,44 @@ module.filename              module.id
 module.loaded                module.parent
 module.paths
 ```
+
+## 队列
+
 - setTimeout,setInterval 将callback放入事件队列中，在定时器条件下执行，但是有可能受到循环时间的影响（比如某次循环时间过长就会影响callback的执行）
 
 - process.nextTick(callback) 将callback放入事件队列中，下次Tick循环时执行callbak，每次循环执行所有的callback
 
 - setImmdiate(callback) 将callback放入事件队列，下次Tick循环时执行callback，callback执行优先级低于process.nextTick的callback，每次循环执行第一个callback然后直接进入下一次循环
+
+## 事件
+
+```javascript
+var events = require('events');
+var emitter = events.EventEmitter();
+
+emitter.on('event',callback);
+emitter.once('event',callback);
+emitter.addListener('event',callback);
+emitter.removeListener('event');
+emitter.removeAllListeners('event');
+emitter.emit('event','smg');
+
+emitter.setMaxListeners(0); //去掉监听器超过10个的限制
+```
+- 雪崩问题
+```javascript
+var events = require('events');
+var emitter = events.EventEmitter();
+
+var status = 'ready';
+var select = function(callback){
+  emitter.once('selected',callback);
+  if(status == 'ready'){
+    db.select('SQL',function(res){
+      emitter.emit('selected',res);
+      status = 'ready';
+    });
+    status = 'padding';
+  }
+}
+```
