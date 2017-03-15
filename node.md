@@ -79,9 +79,10 @@ var select = function(callback){
   }
 }
 ```
-- Deferred原理
+- Deferred原理(大概就是这样的)
 ```javascript
 var events = require('events');
+var fetch = require('fetch');
 var eventEmitter = events.EventEmitter();
 //Promise继承eventEmitter
 var Promise = function(){
@@ -122,4 +123,46 @@ var dfd = new Deferred([
   })
 ]);
 
+```
+
+## 参数传递
+- 按值传递
+
+number,string,boolean等都是按值传递
+
+```javascript
+var a = 1;
+function aa(a){
+  a = 2;
+  console.log(a);//a
+}
+aa(a);
+console.log(a);//1
+```
+- 引用传递
+
+object是按引用传递
+
+```javascript
+var a = {b: 1};
+function aa(a){
+  a.b = 2;
+  console.log(a);//{b: 2}
+}
+aa(a);
+console.log(a);//{b: 2}
+```
+
+- 实参和形参
+
+```javascript
+var a = 1;
+function aa(a){
+  //a是形参
+  console.log(a);//undefined
+  a = 3;
+  arguments[0] = 2;//arguments是实参的集合
+  console.log(a);//3
+}
+aa();//如果有参数，这个参数是实参
 ```
