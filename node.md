@@ -166,3 +166,65 @@ function aa(a){
 }
 aa();//如果有参数，这个参数是实参
 ```
+
+## 流程控制
+- next()
+```javascript
+var express = require('express');
+var app = express();
+
+app.use(中间件1);
+app.use(中间件2);
+app.use(中间件3);
+
+```
+中间件注册并执行，通过next()将控制权交给下一个中间件执行
+- async
+串行
+```javascript
+async.serise([task1(callback),task2(callback)],function(error,res){
+  console.log(res);//[callback1,callback2]
+})
+```
+
+并行
+```javascript
+async.parallel([task1(callback),task2(callback)],function(error,res){
+  console.log(res);//[callback1,callback2]
+})
+```
+限制并行
+```javascript
+//最多并行执行两个任务
+async.parallelLimit([task1(callback),task2(callback)],2,function(error,res){
+  console.log(res);//[callback1,callback2]
+})
+```
+
+依赖串行
+```javascript
+async.waterfall([task1(callback),task2(arg,callback)],function(error,res){
+  console.log(res);//callback2
+})
+```
+
+自动串行
+```javascript
+var dep = {
+  task1:function(callback){},
+  task2:function(callback){},
+}
+async.auto(dep);//以最佳顺序执行串行
+```
+## Bigpipe
+
+```javascript
+var Bigpipe = require('bigpipe');
+var bigpipe = new Bigpipe(num,{
+  refuse:true,//实时返回
+  timeout:500//超时时间
+});
+
+bigpipe.push(task,callback) //推送任务
+bigpipe.on('full',function(len){}) //任务超过num触发回调
+```
