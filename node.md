@@ -79,3 +79,47 @@ var select = function(callback){
   }
 }
 ```
+- Deferred原理
+```javascript
+var events = require('events');
+var eventEmitter = events.EventEmitter();
+//Promise继承eventEmitter
+var Promise = function(){
+  eventEmitter.call(this);
+}
+Promise.prototype.then = function(success,error){
+  this.on('success',success);
+  this.on('error',error);
+}
+
+var Deferred = function(task){
+  this.count = 0;
+  if(this.count == task.length){
+    this.promise = new Promise();
+  }
+}
+Deferred.prototype.resolve = function(res){
+  this.count++;
+  this.promise.emit('success',res);
+}
+Deferred.prototype.reject = function(error){
+  this.promise.emit('error',error);
+}
+
+//使用Deferred
+var dfd = new Deferred([
+  fetch({
+    url:'url',
+    success:function(res){
+      dfd.resolve(res);
+    }
+  }),
+  fetch({
+    url:'url',
+    success:function(res){
+      dfd.resolve(res);
+    }
+  })
+]);
+
+```
