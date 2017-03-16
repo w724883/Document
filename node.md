@@ -216,7 +216,7 @@ var dep = {
 }
 async.auto(dep);//以最佳顺序执行串行
 ```
-## Bigpipe
+- Bigpipe
 
 ```javascript
 var Bigpipe = require('bigpipe');
@@ -442,3 +442,42 @@ decoder.write(buffer);
 //decoder会对宽字节截断问题做处理，被截断的宽字节会保留在decoder对象中，与下一段buffer拼接
 ```
 
+## http
+
+```javascript
+var http = require('http');
+http.createServer(function(req,res){
+  res.writeHead(200,{'Content-Type':'text-plan'});
+  res.end('hi');
+}).listen(3000);
+```
+http.request(options,connect) 生成一个请求
+
+request.end() 本次请求发送结束
+
+
+response.setHead() 设置响应头
+
+response.writeHead() 写入响应头
+
+报头在报文体发送前发送出去的
+
+response.write() 发送响应报文体
+
+response.end() 告知服务器本次响应结束
+
+- 事件
+
+connection建立连接时
+
+request解析http请求报文头后触发
+
+server.close(callback) 当已有的连接都断开时触发
+
+checkContinue 请求发送带有 Expect:100-continue时触发，与request事件互斥
+
+connect 发起connect请求时触发，如果不监听事件，连接会被关闭
+
+upgrade 请求头带有 Upgrade 字段时触发，如果不监听事件，连接会被关闭
+
+clientError 连接的客户端发生错误时会传到服务端时触发
