@@ -232,9 +232,35 @@ bigpipe.on('full',function(len){}) //任务超过num触发回调
 
 `node --prof a.js`V8执行时的性能分析数据
 
-`linux-tick-processor v8.log`查看日志工具（linux-tick-processor在deps/v8/tools下）
+`linux-tick-processor v8.log`查看日志工具（linux-tick-processor在deps/v8/tools下）\
 
+```
+> process.memoryUsage() //查看进程内存的使用情况
+{ rss: 9261056, heapTotal: 10481664, heapUsed: 7326336 }
+```
+```
+> os
+{ hostname: [Function: getHostname],
+  loadavg: [Function: getLoadAvg],
+  uptime: [Function: getUptime],
+  freemem: [Function: getFreeMem],
+  totalmem: [Function: getTotalMem],
+  cpus: [Function: getCPUs],
+  type: [Function: getOSType],
+  release: [Function: getOSRelease],
+  networkInterfaces: [Function: getInterfaceAddresses],
+  homedir: [Function: getHomeDirectory],
+  userInfo: [Function: getUserInfo],
+  arch: [Function],
+  platform: [Function],
+  tmpdir: [Function],
+  tmpDir: [Function],
+  getNetworkInterfaces: [Function: deprecated],
+  EOL: '\r\n',
+  endianness: [Function] }
+  ```
 作用域：全局，局部（function,with），es6的块作用域
 
-垃圾回收：声明函数时会建立一个作用域，函数内声明变量会挂在该作用域下，函数执行结束后作用域销毁，局部变量失效，其引用对象将在下次垃圾回收时被释放
+垃圾回收：声明函数时会建立一个作用域，函数内声明变量会挂在该作用域下，函数执行结束后作用域销毁，局部变量失效，其引用对象将在下次垃圾回收时被释放，主动回收内存包括delete操作、给变量赋值null/undefined
+
 
