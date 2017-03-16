@@ -228,3 +228,13 @@ var bigpipe = new Bigpipe(num,{
 bigpipe.push(task,callback) //推送任务
 bigpipe.on('full',function(len){}) //任务超过num触发回调
 ```
+## 内存
+
+`node --prof a.js`V8执行时的性能分析数据
+
+`linux-tick-processor v8.log`查看日志工具（linux-tick-processor在deps/v8/tools下）
+
+作用域：全局，局部（function,with），es6的块作用域
+
+垃圾回收：声明函数时会建立一个作用域，函数内声明变量会挂在该作用域下，函数执行结束后作用域销毁，局部变量失效，其引用对象将在下次垃圾回收时被释放
+
