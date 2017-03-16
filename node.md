@@ -236,7 +236,9 @@ bigpipe.on('full',function(len){}) //任务超过num触发回调
 
 ```
 > process.memoryUsage() //查看进程内存的使用情况
-{ rss: 9261056, heapTotal: 10481664, heapUsed: 7326336 }
+{ rss: 9261056,//常驻内存
+heapTotal: 10481664,//申请的内存总量
+heapUsed: 7326336 }//目前使用的内存量
 ```
 ```
 > os
@@ -262,5 +264,169 @@ bigpipe.on('full',function(len){}) //任务超过num触发回调
 作用域：全局，局部（function,with），es6的块作用域
 
 垃圾回收：声明函数时会建立一个作用域，函数内声明变量会挂在该作用域下，函数执行结束后作用域销毁，局部变量失效，其引用对象将在下次垃圾回收时被释放，主动回收内存包括delete操作、给变量赋值null/undefined
+- 内存泄漏
+原因：缓存、队列处理不及时（堆积）、作用域未释放
 
+解决：添加缓存限制策略，使用释放内存方法定期释放内存，建议不要将内存做为大量缓存的途径，进程无法共用内存可将缓存放在进程外如redis
+
+
+## Buffer
+Buffer的属性有
+```
+Buffer.__defineGetter__      Buffer.__defineSetter__
+Buffer.__lookupGetter__      Buffer.__lookupSetter__
+Buffer.__proto__             Buffer.constructor
+Buffer.hasOwnProperty        Buffer.isPrototypeOf
+Buffer.propertyIsEnumerable  Buffer.toLocaleString
+Buffer.toString              Buffer.valueOf
+
+Buffer.apply                 Buffer.arguments
+Buffer.bind                  Buffer.call
+Buffer.caller                Buffer.length
+Buffer.name
+
+Buffer.from                  Buffer.of
+Buffer.prototype
+
+Buffer.BYTES_PER_ELEMENT
+
+Buffer.alloc                 Buffer.allocUnsafe
+Buffer.allocUnsafeSlow       Buffer.byteLength
+Buffer.compare               Buffer.concat
+Buffer.isBuffer              Buffer.isEncoding
+Buffer.poolSize
+```
+Buffer.prototype原型链上有
+```
+Buffer {
+  asciiSlice: [Function: asciiSlice],
+  base64Slice: [Function: base64Slice],
+  binarySlice: [Function: binarySlice],
+  hexSlice: [Function: hexSlice],
+  ucs2Slice: [Function: ucs2Slice],
+  utf8Slice: [Function: utf8Slice],
+  asciiWrite: [Function: asciiWrite],
+  base64Write: [Function: base64Write],
+  binaryWrite: [Function: binaryWrite],
+  hexWrite: [Function: hexWrite],
+  ucs2Write: [Function: ucs2Write],
+  utf8Write: [Function: utf8Write],
+  copy: [Function: copy],
+  swap16: [Function: swap16],
+  swap32: [Function: swap32],
+  parent: [Getter],
+  offset: [Getter],
+  toString: [Function],
+  equals: [Function: equals],
+  inspect: [Function: inspect],
+  compare: [Function: compare],
+  indexOf: [Function: indexOf],
+  lastIndexOf: [Function: lastIndexOf],
+  includes: [Function: includes],
+  fill: [Function: fill],
+  write: [Function],
+  toJSON: [Function],
+  slice: [Function: slice],
+  readUIntLE: [Function],
+  readUIntBE: [Function],
+  readUInt8: [Function],
+  readUInt16LE: [Function],
+  readUInt16BE: [Function],
+  readUInt32LE: [Function],
+  readUInt32BE: [Function],
+  readIntLE: [Function],
+  readIntBE: [Function],
+  readInt8: [Function],
+  readInt16LE: [Function],
+  readInt16BE: [Function],
+  readInt32LE: [Function],
+  readInt32BE: [Function],
+  readFloatLE: [Function: readFloatLE],
+  readFloatBE: [Function: readFloatBE],
+  readDoubleLE: [Function: readDoubleLE],
+  readDoubleBE: [Function: readDoubleBE],
+  writeUIntLE: [Function],
+  writeUIntBE: [Function],
+  writeUInt8: [Function],
+  writeUInt16LE: [Function],
+  writeUInt16BE: [Function],
+  writeUInt32LE: [Function],
+  writeUInt32BE: [Function],
+  writeIntLE: [Function],
+  writeIntBE: [Function],
+  writeInt8: [Function],
+  writeInt16LE: [Function],
+  writeInt16BE: [Function],
+  writeInt32LE: [Function],
+  writeInt32BE: [Function],
+  writeFloatLE: [Function: writeFloatLE],
+  writeFloatBE: [Function: writeFloatBE],
+  writeDoubleLE: [Function: writeDoubleLE],
+  writeDoubleBE: [Function: writeDoubleBE] }
+```
+每个汉字占三个buffer元素，每个元素是0-255的数值，用16进制表示，buffer支持编码类型ascii,utf-8,utf16le/ucs-2,base64,binary,hex
+
+给某个元素赋值时，如果是小数小数部分会被舍弃，如果小于0会被不断加上256知道位于0-255为止，如果大于255会被不断减去256直到位于0-255为止
+
+Buffer占的内存不在v8堆内存中，就是说不在process.memoryUsage().heapTotal里，而是由c++实现内存申请
+
+`buffer.write(str,offset,length,encoding)` 操作buffer
+
+`buffer.copy(buf,pos)` 将buffer复制到buf，buf下标pos处开始复制
+
+`buffer.toString(encoding,start,end)` buffer转字符串
+
+`isEncoding` 判断编码类型是否支持转换buffer
+
+buffer拼接
+```javascript
+var chunks = [];
+var count = 0;
+respont.on('data',function(chunk){
+  chunks.push(chunk);
+  count += chunk.length;
+})
+respont.on('end',function(){
+  var buffer = Buffer.concat(chunks,count);
+  console.log(buffer);
+})
+```
+Buffer.concat的机制
+```javascript
+Buffer.concat = function(array,len){
+  if(!Array.isArray(array)){
+    throw new Error('error');
+    return false;
+  }
+  if(array.length === 0){
+    return new Buffer(0);
+  }
+  if(array.length === 1){
+    return array[0];
+  }
+  if(typeof len !== 'number'){
+    len = 0;
+    for(var i = 0; i < array.length; i++){
+      len += array[i].length;
+    }
+  }
+  var buffer = new Buffer(len);
+  var pos = 0;
+  for(var i = 0; i < array.length; i++){
+    array[i].copy(buffer,pos);
+    pos += array.length;
+  }
+  return buffer;
+}
+```
+
+- stream
+
+`stream.setEncoding(encoding)` 设置可读流的编码，setEncoding内部由decoder实现
+```javascript
+var stringDecoder = require('string_decoder').stringDecoder;
+var decoder = new stringDecoder('utf-8');
+decoder.write(buffer);
+//decoder会对宽字节截断问题做处理，被截断的宽字节会保留在decoder对象中，与下一段buffer拼接
+```
 
