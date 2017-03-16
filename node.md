@@ -419,8 +419,20 @@ Buffer.concat = function(array,len){
   return buffer;
 }
 ```
-
+网络传输通过Buffer传输性能更加，测试ab -c 10 -n 10 http://www.baidu.com/
 - stream
+```javascript
+var fs = require('fs');
+fs.createReadStream(path,{
+  flags:'r',
+  encoding:null,
+  fd:null,
+  mode:0666,
+  start:0,//开始读取行数
+  end:10,//结束读取行数
+  highWaterMark:10//限制读取Buffer的长度为10
+})
+```
 
 `stream.setEncoding(encoding)` 设置可读流的编码，setEncoding内部由decoder实现
 ```javascript
