@@ -630,6 +630,47 @@ httpOnly 告诉浏览器该cookie不能通过document.cookie获取，但是依�
 
 secure 当值为true时，在http链接中无效也不回传给服务器，在https时才有效并且会传给服务器
 
+缺点：每次请求都会携带并且子域也会携带，静态文件请求也会携带占用带宽
+
+## session
+
+```javascript
+var sessions = {};
+var key = 'session_id';
+var EXPIRES = 1000*60*60;
+
+var generate = function(){
+  var session = {};
+  session.id = new Date().getTime()+Math.random();
+  session.cookie = {
+    expire:new Date().getTime() + EXPIRES
+  }
+  sessions[session.id] = session;
+  return session;
+}
+
+
+function (req,res){
+  var id = req.cookie.key;
+  if(!id){
+    req.session = generate();
+    
+  }else{
+    var session = sessions[id];
+    if(session){
+      if(session.cookie.expire > new Date().getTime()){
+        session.cookie.expire = new Date().getTime() + EXPIRES;
+        req.session = session;
+      }else{
+        delete sessions[id];
+        req.session = generate();
+      }
+    }else{
+      req.session = generate();
+    }
+  }
+}
+```
 
 
 ## node调试
