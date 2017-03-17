@@ -451,10 +451,43 @@ http.createServer(function(req,res){
   res.end('hi');
 }).listen(3000);
 ```
-http.request(options,connect) 生成一个请求
+- request
+
+http.request(options,connect) 生成一个请求，
+`options = {
+  host,//服务器域名
+  port,
+  hostname,
+  localAddress,//建立连接的本地网卡
+  socketPath,//Domain套接字路径
+  method,
+  path,
+  headers,//请求头对象
+  auth,//Basic认证，我也不知道是什么，
+  agent,//代理配置
+}
+
+`
 
 request.end() 本次请求发送结束
 
+服务端事件
+
+connection 建立连接时触发
+
+request 解析http请求报文头后触发
+
+server.close(callback) 当已有的连接都断开时触发
+
+checkContinue 请求发送带有 Expect:100-continue时触发，与request事件互斥
+
+connect 发起connect请求时触发，如果不监听事件，连接会被关闭
+
+upgrade 请求头带有 Upgrade 字段时触发，如果不监听事件，连接会被关闭
+
+clientError 连接的客户端发生错误时会传到服务端时触发
+
+- response
 
 response.setHead() 设置响应头
 
@@ -466,18 +499,105 @@ response.write() 发送响应报文体
 
 response.end() 告知服务器本次响应结束
 
-- 事件
+客户端事件
 
-connection建立连接时
+response 得到响应时触发
 
-request解析http请求报文头后触发
+socket 链接池建立的连接分配给当前请求时触发
 
-server.close(callback) 当已有的连接都断开时触发
+connect客户端发起connect请求服务端返回200时触发
 
-checkContinue 请求发送带有 Expect:100-continue时触发，与request事件互斥
+upgrade客户端发起upgrade请求服务端响应101时触发
 
-connect 发起connect请求时触发，如果不监听事件，连接会被关闭
+continue 客户端发起带有Expect:100-continue头信息，试图发送大数据，如果服务器响应100 Continue时触发
 
-upgrade 请求头带有 Upgrade 字段时触发，如果不监听事件，连接会被关闭
+- Agent
+用于管理客户与服务端的连接
+`
+new http.Agent({
+  maxSocket:10//默认是5，false是请求不做并发管理限制
+})
+`
+## websocket
 
-clientError 连接的客户端发生错误时会传到服务端时触发
+```javascript
+
+```
+
+## 加密
+
+node提供三个模块
+
+crypto用于加密
+
+tls 与net模块类似，但是建立在TLS/SSL加密的TCP连接上
+
+https 与http模块一致，但是建立在加密的连接上
+
+- TLS/SSL
+
+TLS/SSL 公钥/私钥，服务端客户端都各自有自己的公私钥，公钥用于加密数据，私钥用于解密数据，建立安全连接前客户端服务端会交换公钥
+
+生成私钥：openssl genrsa -out server.key 1024
+
+生成公钥：openssl rsa -in server.key -pubout -out server.pem
+
+在交换公钥的过程中有可能会被中间人窃取，从而伪装服务器，所以需要使用数字证书进行验证连接是来自于服务器而不是中间人
+
+服务端将自己的私钥生成csr文件，CA机构拿到这个文件后给其颁发签名证书，当服务器和客户端交换公钥时，客户端会拿服务器的签名证书去CA机构验证服务器是否真的来自于真实服务器
+
+CA机构可以是知名机构也可以是自己扮演颁发机构，知名机构一般在安装浏览器时其证书已预装了，自己扮演的机构则需要客户端自己获取
+
+过程如下
+
+生成私钥：openssl genrsa -out ca.key 1024
+
+生成csr文件：openssl req  -new -key ca.key -out ca.csr
+
+通过私钥生成证书：openssl x509 -req -in ca.csr -signkey ca.key -out ca.crt
+
+
+- https
+
+
+https是建立在TLS/SSL上的http
+
+服务端 :
+```javascript
+var https = require('https');
+var fs = require('fs');
+
+var options = {
+  key:fs.readFileSync('./server.key'),
+  cert:fs.readFileSync('./server.crt')
+}
+
+https.createServer(options,function(req,res){
+  res.writeHead(200);
+  res.end('hi');
+}).listen(3000);
+```
+客户端：
+```javascript
+var https = require('https');
+var fs = require('fs');
+var options = {
+  hotsname,
+  port,
+  path,
+  method,
+  key:fs.readFileSync('./client.key'),客户端私钥
+  cert:fs.readFileSync('./client.crt'),客户端里的签名证书
+  ca:fs.readFileSync('./ca.crt'),//服务端证书
+}
+
+options.agent = new https.Agent(options);
+
+var req = https.request(options,function(res){
+  res.setEncoding('utf-8');
+  res.on('data'.function(chunk){
+    console.log(chunk);
+  });
+});
+req.end();
+```
