@@ -512,7 +512,8 @@ upgrade客户端发起upgrade请求服务端响应101时触发
 continue 客户端发起带有Expect:100-continue头信息，试图发送大数据，如果服务器响应100 Continue时触发
 
 - Agent
-用于管理客户与服务端的连接
+
+其实可以看做浏览器
 `
 new http.Agent({
   maxSocket:10//默认是5，false是请求不做并发管理限制
@@ -601,3 +602,45 @@ var req = https.request(options,function(res){
 });
 req.end();
 ```
+
+## 开发web
+- req
+
+```javascript
+var https = require('https');
+var url = require('url');
+
+https.createServer(function(req,res){
+  console.log(url.parse(req.url,true));//打印请求url
+  console.log(req.header);//打印请求header
+}).listen(3000);
+
+```
+
+-cookie
+
+path cookie存在该路径下，并浏览器会发送给服务端
+
+
+expires/max-age 前者告诉浏览器什么时候过期，后者告诉浏览器多长时间后过期
+
+
+httpOnly 告诉浏览器该cookie不能通过document.cookie获取，但是依然会发送给浏览器
+
+
+secure 当值为true时，在http链接中无效也不回传给服务器，在https时才有效并且会传给服务器
+
+
+
+## node调试
+
+- nodemon
+
+nodemon可以监听文件变化自动重起服务
+
+安装`npm install nodemon -g`
+
+执行`nodemon app.js`
+
+执行命令`nodemon --exec npm start`
+
