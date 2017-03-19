@@ -634,7 +634,7 @@ secure 当值为true时，在http链接中无效也不回传给服务器，在ht
 
 ## session
 
-通过cookie实现session
+- 通过cookie实现session
 ```javascript
 var sessions = {};
 var key = 'session_id';
@@ -673,7 +673,7 @@ function (req,res){
 }
 ```
 
-通过url字符串实现session
+- 通过url字符串实现session
 ```javascript
 function (req,res){
   var redirect = function(url){
@@ -704,6 +704,54 @@ function (req,res){
 }
 
 ```
+
+
+- sessionid安全
+
+sessionid会存在cookie或者url里，为了保证sessionid的安全
+
+1.通过私钥加密sessionid
+
+2.通过验证一些特有的信息，如果不是原始的客户端将签名失败
+
+
+- xss
+
+通过漏洞伪造脚本在用户浏览器中执行一些js脚本，获取用户的信息
+
+解决：不要解析来自用户的输入，所有字符转义
+
+- csrf
+
+通过漏洞跨站伪造请求，使用户触发一些非本意行为
+
+解决：在渲染页面是在前端输出token，提交数据是带上token，确保数据是来自于服务器输出的页面
+
+
+- 浏览器缓存
+
+1.响应设置Expires/Cache-Control头，告诉浏览器这个请求可以直接读取浏览器缓存，Expires是缓存到期时间，Cache-Control的max-age是还有多少时间到期,同时存在会覆盖Expires，Cache-Control可以设置public/private/no-cache/no-store
+
+2.E-Tag 请求资源前，存在E-Tag的get请求会发起一个条件请求，询问服务器这个文件是否有变化，如果返回304则使用本地文件，如果有变化则直接将文件返回
+
+## post
+
+
+```javascript
+function (req,res){
+  //判断请求是否带内容
+  return 'transfe-encoding' in req.headers || 'content-length' in req.headers;
+}
+```
+
+- content-type
+
+1.application/x-www-form-urlencoded 表示表单提交，提交数据早req.body
+
+2.application/json 使用JSON.parse解析
+
+
+3.mutipart/form-data
 ## node调试
 
 - nodemon
