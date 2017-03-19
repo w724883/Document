@@ -634,6 +634,7 @@ secure 当值为true时，在http链接中无效也不回传给服务器，在ht
 
 ## session
 
+通过cookie实现session
 ```javascript
 var sessions = {};
 var key = 'session_id';
@@ -672,7 +673,37 @@ function (req,res){
 }
 ```
 
+通过url字符串实现session
+```javascript
+function (req,res){
+  var redirect = function(url){
+    res.setHeader('Location',url);
+    res.writeHead(302);
+    res.end();
+  };
+  var id = req.query[key];
+  if(!id){
+    var session = generate();
+    redirect(req.url,seesion.id);
+  }else{
+    var session = sessions[id];
+    if(session){
+      if(session.cookie.expire > new Date().getTime()){
+        session.cookie.expire = new Date().getTime() + EXPIRES;
+        req.session = session;
+      }else{
+        delete sessions[id];
+        req.session = generate();
+        redirect(req.url,seesion.id);
+      }
+    }else{
+      var session = generate();
+      redirect(req.url,seesion.id);
+    }
+  }
+}
 
+```
 ## node调试
 
 - nodemon
