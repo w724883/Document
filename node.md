@@ -781,6 +781,26 @@ function (req,res){
 }
 ```
 
+
+## 中间件
+
+- 跳转
+res.redirect = function(){
+  res.setHeader('Location',url);
+  res.writeHead(302);
+  res.end();
+}
+
+- 渲染
+res.render = function(view,data){
+  res.setHeader('Content-Type','text/html');
+  res.write(200);
+  var html = render(view,data);
+  res.end(html);
+}
+
+
+
 ## node调试
 
 - nodemon
