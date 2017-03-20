@@ -800,6 +800,39 @@ res.render = function(view,data){
 }
 
 
+## 进程
+
+- spawn()
+启动子进程来执行命令
+
+- exec()
+启动子进程来执行命令，但其回调函数能获知子进程的状况,可以指定超时时间，一旦超时子进程将被杀死
+
+- execFile()
+启动子进程执行可执行文件，首行须添加 #!/usr/bin/env node
+
+- fork()
+功能与spawn类似，但是其创建进程只需指定js文件模块
+
+- 主从通信
+主从进程通过message和send()传递消息，kill()
+```javascript
+var cp = require('child_process');
+var child = cp.fork('child.js');
+child.on('message',function(m){
+  console.log(m);
+});
+child.send({msg:'hello'});
+
+process.on('message',function(m){
+  console.log(m);
+});
+process.send({msg:'hi'});
+```
+
+- 进程通信
+技术：管道，socket，共享内存，消息队列，Domain Socket等
+
 
 ## node调试
 
