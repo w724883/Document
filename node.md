@@ -749,9 +749,38 @@ function (req,res){
 1.application/x-www-form-urlencoded 表示表单提交，提交数据早req.body
 
 2.application/json 使用JSON.parse解析
+```javascript
+res.json = function(){
+  res.setHeader('Content-Type','application/json');
+  res.writeHead(200);
+  res.end(JSON.stringify(json));
+}
+```
 
+3.mutipart/form-data 特殊的表单提交，如文件的提交
 
-3.mutipart/form-data
+4.text/plain 表示文本提交
+
+- Content-Disposition
+
+inline 用于查看内容
+
+attachment 可作为附件，可下载
+```javascript
+function (req,res){
+  res.sendfile = function (){
+    fs.stat(filepath,function(error,stat){
+      var stream = fs.createReadStream(filepath);
+      res.setHeader('Content-Type',mime.lookup(filepath));
+      res.setHeader('Content-Length',stat.size);
+      res.setHeader('Content-Disposition','attachment;filename="a.js"');
+      res.writeHead(200);
+      stream.pipe(res);
+    })
+  }
+}
+```
+
 ## node调试
 
 - nodemon
