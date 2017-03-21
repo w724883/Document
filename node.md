@@ -815,7 +815,7 @@ res.render = function(view,data){
 功能与spawn类似，但是其创建进程只需指定js文件模块
 
 - 主从通信
-主从进程通过message和send()传递消息，kill()
+主从进程通过message接收消息和send()传递消息，kill()发送信号给子进程以做出约定行为
 ```javascript
 var cp = require('child_process');
 var child = cp.fork('child.js');
@@ -830,8 +830,34 @@ process.on('message',function(m){
 process.send({msg:'hi'});
 ```
 
-- 进程通信
+- 进程间通信
 技术：管道，socket，共享内存，消息队列，Domain Socket等
+
+- 进程事件
+message 接受send发来的请求
+
+error 子进程无法被复制创建杀死发送消息时触发
+
+exit 子进程退出时触发，正常退出时第一个参数为退出码否则为null，如果被kill杀死第二个参数为进程信号
+
+close 子进程的标准输入输出流中止时触发事件，参数与exit相同
+
+disconnect 在父进程或子进程中调用disconnect()方法时触发，调用时关闭监听通道
+
+uncaughtException 捕获异常时触发
+
+## cluster
+事件
+
+fork 复制一个工作进程后触发
+
+online 复制好一个工作进程后，工作进程主动发送online消息给主进程，主进程收到消息后触发
+
+disconnect 主进程和工作进程通道断开后触发
+
+exit 有工作进程退出时触发
+
+setup cluster.setupMaster()执行后触发
 
 
 ## node调试
