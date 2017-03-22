@@ -252,6 +252,7 @@ includes(target,start = 0) 返回一个布尔值，表示某个数组是否包�
 
 ## 函数
 
+
 - 扩展
 ```javascript
 function add(...values) {
@@ -321,6 +322,51 @@ let log = ::console.log;
 var log = console.log.bind(console);
 
 ```
+
+## 对象
+
+object.hasOwnProperty(property) 自身是否某属性
+
+function.prototype.isPrototypeOf(object) 判断function的原型链是否在object上
+```javascript
+var o = {
+  method() {
+    return "Hello!";
+  }
+};
+// 等同于
+var o = {
+  method: function() {
+    return "Hello!";
+  }
+};
+```
+```javascript
+let obj = {
+  ['a'+'b']: true
+};
+// 等同于
+let obj = {
+  ab: true
+};
+//表达式放在[]中
+```
+
+```javascript
+var age = 18;
+var test = {
+    get age (){
+        console.log(1);
+    },
+    set age (value){
+        console.log(2);
+    }
+};
+
+test.age;//1
+test.age = 20;//2
+```
+
 
 
 ## Babel
