@@ -328,6 +328,49 @@ var log = console.log.bind(console);
 object.hasOwnProperty(property) 自身是否某属性
 
 function.prototype.isPrototypeOf(object) 判断function的原型链是否在object上
+
+Object.defineProperty/Object.defineProperties  将属性添加到对象，或修改现有属性的特性
+```javascript
+Object.defineProperty(obj, "property", {
+     writable:       true,   //设置属性是否可写，默认为true
+     configurable:   false,  //设置属性是否可以配置，默认为true。当设置为false时不能用delete删除
+     enumerable:     false,  //设置属性是否可以枚举，默认为true.即for-in循环对象的时候可以输出属性
+     value:          0,      //默认值
+     get:            function(){},
+     set:             funcction(){}
+});
+```
+Object.getOwnPropertyDescriptor(obj, property) 获取obj的属性列表，如Object.defineProperty定义的属性
+
+Object.getOwnPropertyNames(obj) 返回一个由指定对象的所有自身属性的属性名（包括不可枚举属性）组成的数组
+
+Object.observe(obj,callback) 为对象指定监视时调用的回调函数，只能浅度监听
+
+Object.unobserve(obj,callback) 移除监视时调用的回调函数
+
+Object.deliverChangeRecords(callback) 通过回调函数对对象值进行修改
+
+Object.getNotifier 获取Notifier对象
+
+Object.freeze(obj) 冻结对象，引用地址和值都不能改变
+
+Object.isFrozen(object) 如果无法在对象中修改现有属性的特性和值，且无法向对象添加新属性，则返回 true。
+
+Object.isSealed(object) 如果无法在对象中修改现有属性的特性，且无法向对象添加新属性，则返回 true。
+
+Object.isExtensible(obj) 判断一个对象是否是可扩展的（是否可以在它上面添加新的属性）。
+
+Object.create(prototype, descriptors) 创建一个拥有指定原型链和若干个指定属性的对象。prototype是对象，descriptors中的某个值与Object.defineProperty的第二个参数一样
+
+Object.getOwnPropertySymbols(obj) 可以获取指定对象的所有Symbol属性名
+
+Object.getPrototypeOf(object) 返回对象的原型。
+
+Object.setPrototypeOf(object, proto) 设置对象的原型。
+
+obj.propertyIsEnumerable('name') 判断对象obj上的name是否可以被枚举
+
+
 ```javascript
 var o = {
   method() {
@@ -366,6 +409,92 @@ var test = {
 test.age;//1
 test.age = 20;//2
 ```
+
+Object.is(v1,v2) 用来比较两个值是否严格相等
+```javascript
++0 === -0 //true
+NaN === NaN // false
+
+Object.is(+0, -0) // false
+Object.is(NaN, NaN) // true
+```
+
+Object.assign(targetobj,obj) 用于对象的合并(浅拷贝)，将源对象（source）的所有可枚举属性，复制到目标对象
+```javascript
+typeof Object.assign(2) // "object"
+
+Object.assign(undefined) // 报错
+Object.assign(null) // 报错
+
+Object.assign(obj) === obj // true
+Object.assign(obj, undefined) === obj // true
+Object.assign(obj, null) === obj // true
+```
+for...in循环：只遍历对象自身的和继承的可枚举的属性
+
+Object.keys()：返回对象自身的所有可枚举的属性的键名
+
+JSON.stringify()：只串行化对象自身的可枚举的属性
+
+
+遍历
+
+1.for...in
+for...in循环遍历对象自身的和继承的可枚举属性（不含Symbol属性）。
+
+2.Object.keys(obj)
+Object.keys返回一个数组，包括对象自身的（不含继承的）所有可枚举属性（不含Symbol属性）。
+
+3.Object.getOwnPropertyNames(obj)
+Object.getOwnPropertyNames返回一个数组，包含对象自身的所有属性（不含Symbol属性，但是包括不可枚举属性）。
+
+4.Object.getOwnPropertySymbols(obj)
+Object.getOwnPropertySymbols返回一个数组，包含对象自身的所有Symbol属性。
+
+5.Reflect.ownKeys(obj)
+Reflect.ownKeys返回一个数组，包含对象自身的所有属性，不管是属性名是Symbol或字符串，也不管是否可枚举。
+
+Object.keys()，Object.values()，Object.entries() 遍历对象
+
+
+扩展运算符
+
+```javascript
+let { x, y, ...z } = { x: 1, y: 2, a: 3, b: 4 };
+x // 1
+y // 2
+z // { a: 3, b: 4 }
+
+let { x, y, ...z } = null; // 运行时错误
+let { x, y, ...z } = undefined; // 运行时错误
+
+let { ...x, y, z } = obj; // 句法错误
+let { x, ...y, ...z } = obj; // 句法错误
+
+let obj = { a: { b: 1 } };
+let { ...x } = obj;
+obj.a.b = 2;
+x.a.b // 2
+
+let z = { a: 3, b: 4 };
+let n = { ...z };
+n // { a: 3, b: 4 }
+
+let ab = { ...a, ...b };
+// 等同于
+let ab = Object.assign({}, a, b);
+```
+传导符
+
+```javascript
+const firstName = (message
+  && message.body
+  && message.body.user
+  && message.body.user.firstName) || 'default';
+  //等同于
+  const firstName = message?.body?.user?.firstName || 'default';
+```
+
 
 
 
