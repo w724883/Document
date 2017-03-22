@@ -119,6 +119,8 @@ tag\`Hello ${ a + b } world ${ a * b}\`; 相当于 tag(['Hello ', ' world ', '']
 String.raw 将模板字符串还原为正常的字符串
 
 ## 正则
+
+
 ## 数值
 
 Number.isFinite()用来检查一个数值是否为有限的
@@ -249,6 +251,76 @@ for (let [index, elem] of ['a', 'b'].entries()) {
 includes(target,start = 0) 返回一个布尔值，表示某个数组是否包含给定的值,第二个参数表示搜索的起始位置，默认为0
 
 ## 函数
+
+- 扩展
+```javascript
+function add(...values) {
+  return values;
+}
+add(2, 5, 3) // [2, 5, 3]
+
+// 报错
+function f(a, ...b, c) {}
+```
+```javascript
+console.log(1, ...[2, 3, 4], 5)// 1 2 3 4 5
+
+function f(x, y, z) {
+  console.log(x);//0
+}
+f(...[0, 1, 2]);
+```
+
+```javascript
+Math.max(...[14, 3, 77]);//77
+
+[1].push(...[2,3]);//[1,2,3]
+
+[...[1], ...[2,3]];//[1,2,3]
+
+const [first, ...rest] = [1, 2, 3, 4, 5];//rest = [2,3,4,5]
+const [...butLast, last] = [1, 2, 3, 4, 5];
+// 报错
+const [first, ...middle, last] = [1, 2, 3, 4, 5];
+// 报错
+
+[...'hello']// [ "h", "e", "l", "l", "o" ]
+
+
+```
+任何Iterator接口的对象，都可以用扩展运算符转为真正的数组。
+
+
+箭头函数有几个注意点
+
+1.函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象。
+
+2.不可以当作构造函数，也就是说，不可以使用new命令，否则会抛出一个错误。
+
+3.不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用Rest参数代替。
+
+4.不可以使用yield命令，因此箭头函数不能用作Generator函数。
+
+call(this的指向,arguments) 立即执行
+apply(this的指向,[]) 立即执行
+
+bind(this的指向,arguments) 返回原函数，不立即执行
+
+es7
+```javascript
+foo::bar;
+// 等同于
+bar.bind(foo);
+
+foo::bar(...arguments);
+// 等同于
+bar.apply(foo, arguments);
+
+let log = ::console.log;
+// 等同于
+var log = console.log.bind(console);
+
+```
 
 
 ## Babel
