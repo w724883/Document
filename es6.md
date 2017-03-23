@@ -363,6 +363,19 @@ Object.isExtensible(obj) 判断一个对象是否是可扩展的（是否可以�
 Object.create(prototype, descriptors) 创建一个拥有指定原型链和若干个指定属性的对象。prototype是对象，descriptors中的某个值与Object.defineProperty的第二个参数一样
 
 Object.getOwnPropertySymbols(obj) 可以获取指定对象的所有Symbol属性名
+```javascript
+var obj = {};
+var a = Symbol('a');
+var b = Symbol('b');
+
+obj[a] = 'Hello';
+obj[b] = 'World';
+
+var objectSymbols = Object.getOwnPropertySymbols(obj);
+
+objectSymbols
+// [Symbol(a), Symbol(b)]
+```
 
 Object.getPrototypeOf(object) 返回对象的原型。
 
@@ -430,12 +443,26 @@ Object.assign(obj) === obj // true
 Object.assign(obj, undefined) === obj // true
 Object.assign(obj, null) === obj // true
 ```
-for...in循环：只遍历对象自身的和继承的可枚举的属性
+Object.keys() 
+```javascript
+var obj = { foo: 'bar', baz: 42 };
+Object.keys(obj)
+// ["foo", "baz"]
+```
 
-Object.keys()：返回对象自身的所有可枚举的属性的键名
+Object.values() 
+```javascript
+var obj = { foo: 'bar', baz: 42 };
+Object.values(obj)
+// ["bar", 42]
+```
 
-JSON.stringify()：只串行化对象自身的可枚举的属性
-
+Object.entries()
+```javascript
+var obj = { foo: 'bar', baz: 42 };
+Object.entries(obj)
+// [ ["foo", "bar"], ["baz", 42] ]
+```
 
 遍历
 
@@ -453,9 +480,6 @@ Object.getOwnPropertySymbols返回一个数组，包含对象自身的所有Symb
 
 5.Reflect.ownKeys(obj)
 Reflect.ownKeys返回一个数组，包含对象自身的所有属性，不管是属性名是Symbol或字符串，也不管是否可枚举。
-
-Object.keys()，Object.values()，Object.entries() 遍历对象
-
 
 扩展运算符
 
@@ -495,9 +519,37 @@ const firstName = (message
   const firstName = message?.body?.user?.firstName || 'default';
 ```
 
+## Symbol
 
+js的七种数据类型
+Undefined、Null、布尔值（Boolean）、字符串（String）、数值（Number）、对象（Object）、Symbol
 
+Symbol不能实例化，接受字符串参数作为描述
+```javascript
+var s1 = Symbol('foo');
+s1 // Symbol(foo)
+s1.toString() // "Symbol(foo)"
+```
+参数为非字符串时，先转化为字符串
+```javascript
+const obj = {
+  toString() {
+    return 'abc';
+  }
+};
+const sym = Symbol(obj);
+sym // Symbol(abc)
+```
+Symbol不参与运算，否则报错，但是可以转化为布尔、字符串
 
+Symbol.for() 接受一个字符串作为参数，然后搜索有没有以该参数作为名称的Symbol值。如果有，就返回这个Symbol值，否则就新建并返回一个以该字符串为名称的Symbol值
+```javascript
+var s1 = Symbol.for('foo');
+var s2 = Symbol.for('foo');
+s1 === s2 // true
+```
+
+Symbol.keyFor()
 ## Babel
 Babel是一个广泛使用的ES6转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。
 
