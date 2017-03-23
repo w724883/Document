@@ -946,17 +946,46 @@ proxy.foo // TypeError: Revoked
 
 
 
+## Reflect
 
+Reflect.get(target, name, receiver)
+查找并返回target对象的name属性，如果没有该属性，则返回undefined。
 
+Reflect.set(target, name, value, receiver)
+设置target对象的name属性等于value。
 
+Reflect.has(obj, name)
+对应name in obj里面的in运算符。
 
+Reflect.deleteProperty(obj, name)
+等同于delete obj[name]，用于删除对象的属性。
 
+Reflect.construct(target, args) 
+等同于new target(...args)，这提供了一种不使用new，来调用构造函数的方法。
 
+Reflect.getPrototypeOf(obj)
+用于读取对象的__proto__属性，对应Object.getPrototypeOf(obj)。
 
+Reflect.setPrototypeOf(obj, newProto)
+用于设置对象的__proto__属性，返回第一个参数对象，对应Object.setPrototypeOf(obj, newProto)。
 
+Reflect.apply(func, thisArg, args)
+等同于Function.prototype.apply.call(func, thisArg, args)，用于绑定this对象后执行给定函数。
 
+Reflect.defineProperty(target, propertyKey, attributes)
+基本等同于Object.defineProperty，用来为对象定义属性。未来，后者会被逐渐废除，请从现在开始就使用Reflect.defineProperty代替它。
 
+Reflect.getOwnPropertyDescriptor(target, propertyKey)
+基本等同于Object.getOwnPropertyDescriptor，用于得到指定属性的描述对象，将来会替代掉后者。
 
+Reflect.isExtensible (target)
+对应Object.isExtensible，返回一个布尔值，表示当前对象是否可扩展。
+
+Reflect.preventExtensions(target)
+Object.preventExtensions方法，用于让一个对象变为不可扩展。它返回一个布尔值，表示是否操作成功。
+
+Reflect.ownKeys (target)
+用于返回对象的所有属性，基本等同于Object.getOwnPropertyNames与Object.getOwnPropertySymbols之和。
 
 
 
