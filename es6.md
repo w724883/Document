@@ -549,7 +549,163 @@ var s2 = Symbol.for('foo');
 s1 === s2 // true
 ```
 
-Symbol.keyFor()
+Symbol.keyFor方法返回一个已登记的 Symbol 类型值的key。
+```javascript
+var s1 = Symbol.for("foo");
+Symbol.keyFor(s1) // "foo"
+
+var s2 = Symbol("foo");
+Symbol.keyFor(s2) // undefined
+```
+Symbol.hasInstance 指向一个内部方法。其他对象使用instanceof运算符，会调用这个方法。
+```javascript
+class MyClass {
+  [Symbol.hasInstance](foo) {
+    return foo instanceof Array;
+  }
+}
+[1, 2, 3] instanceof new MyClass() // true
+```
+
+Symbol.isConcatSpreadable 等于一个布尔值（默认false），表示该对象使用Array.prototype.concat()时，是否可以展开。true或undefined可展开。
+```javascript
+let arr1 = ['c', 'd'];
+['a', 'b'].concat(arr1, 'e') // ['a', 'b', 'c', 'd', 'e']
+arr1[Symbol.isConcatSpreadable] // undefined
+```
+
+Symbol.species 指向当前对象的构造函数。
+```javascript
+class MyArray extends Array {
+  static get [Symbol.species]() { return Array; }
+}
+var a = new MyArray(1,2,3);
+var mapped = a.map(x => x * x);
+
+mapped instanceof MyArray // false
+mapped instanceof Array // true
+```
+
+Symbol.match 指向一个函数，执行str.match(myObject)时，会调用它，返回该方法的返回值。
+```javascript
+class MyMatcher {
+  [Symbol.match](string) {
+    return 'hello world'.indexOf(string);
+  }
+}
+
+'e'.match(new MyMatcher()) // 1
+```
+
+Symbol.replace 指向一个方法，该对象被String.prototype.replace方法调用时，会返回该方法的返回值。
+```javascript
+const x = {};
+x[Symbol.replace] = (...s) => console.log(s);
+
+'Hello'.replace(x, 'World') // ["Hello", "World"]
+```
+
+Symbol.search 指向一个方法，该对象被String.prototype.search，会返回该方法的返回值。
+```javascript
+class MySearch {
+  constructor(value) {
+    this.value = value;
+  }
+  [Symbol.search](string) {
+    return string.indexOf(this.value);
+  }
+}
+'foobar'.search(new MySearch('foo')) // 0
+```
+
+Symbol.split 指向一个方法，该对象被String.prototype.split，会返回该方法的返回值。
+```javascript
+class MySplitter {
+  constructor(value) {
+    this.value = value;
+  }
+  [Symbol.split](string) {
+    var index = string.indexOf(this.value);
+    if (index === -1) {
+      return string;
+    }
+    return [
+      string.substr(0, index),
+      string.substr(index + this.value.length)
+    ];
+  }
+}
+
+'foobar'.split(new MySplitter('foo'))
+// ['', 'bar']
+```
+
+对象的Symbol.iterator属性，指向该对象的默认遍历器方法。
+```javascript
+var myIterable = {};
+myIterable[Symbol.iterator] = function* () {
+  yield 1;
+  yield 2;
+  yield 3;
+};
+
+[...myIterable] // [1, 2, 3]
+```
+
+对象的Symbol.iterator属性，指向该对象的默认遍历器方法。
+
+对象的Symbol.toPrimitive属性，指向一个方法。该对象被转为原始类型的值时，会调用这个方法，返回该对象对应的原始类型值。
+```javascript
+let obj = {
+  [Symbol.toPrimitive](hint) {
+    switch (hint) {
+      case 'number':
+        return 123;
+      case 'string':
+        return 'str';
+      case 'default':
+        return 'default';
+      default:
+        throw new Error();
+     }
+   }
+};
+
+2 * obj // 246
+3 + obj // '3default'
+obj == 'default' // true
+String(obj) // 'str'
+```
+
+对象的Symbol.toStringTag属性，指向一个方法。在该对象上面调用Object.prototype.toString方法时，如果这个属性存在，它的返回值会出现在toString方法返回的字符串之中，表示对象的类型。
+```javascript
+
+({[Symbol.toStringTag]: 'Foo'}.toString())
+// "[object Foo]"
+
+
+class Collection {
+  get [Symbol.toStringTag]() {
+    return 'xxx';
+  }
+}
+var x = new Collection();
+Object.prototype.toString.call(x) // "[object xxx]"
+```
+
+对象的Symbol.unscopables属性，指向一个对象。该对象指定了使用with关键字时，哪些属性会被with环境排除。
+```javascript
+Array.prototype[Symbol.unscopables]
+// {
+//   copyWithin: true,
+//   entries: true,
+//   fill: true,
+//   find: true,
+//   findIndex: true,
+//   includes: true,
+//   keys: true
+// }
+```
 ## Babel
 Babel是一个广泛使用的ES6转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。
 
