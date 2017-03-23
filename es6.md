@@ -987,6 +987,8 @@ Object.preventExtensions方法，用于让一个对象变为不可扩展。它�
 Reflect.ownKeys (target)
 用于返回对象的所有属性，基本等同于Object.getOwnPropertyNames与Object.getOwnPropertySymbols之和。
 
+## Promise
+
 
 
 ## Babel
