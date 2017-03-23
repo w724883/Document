@@ -88,23 +88,31 @@ var eventEmitter = events.EventEmitter();
 var Promise = function(){
   eventEmitter.call(this);
 }
+Promise.prototype = Object.creat(eventEmitter.prototype);
+
 Promise.prototype.then = function(success,error){
   this.on('success',success);
   this.on('error',error);
 }
-
+var promise = new Promise();
 var Deferred = function(task){
   this.count = 0;
-  if(this.count == task.length){
-    this.promise = new Promise();
+  for(var i = 0; i < task.length; i++){
+    task[i]();
   }
+  return promise;
 }
 Deferred.prototype.resolve = function(res){
   this.count++;
-  this.promise.emit('success',res);
+  if(this.count == task.length){
+    promise.emit('success',res);
+  }
 }
 Deferred.prototype.reject = function(error){
-  this.promise.emit('error',error);
+  this.count++;
+  if(this.count == task.length){
+    promise.emit('error',error);
+  }
 }
 
 //使用Deferred
@@ -121,7 +129,7 @@ var dfd = new Deferred([
       dfd.resolve(res);
     }
   })
-]);
+]).then(callback,callback);
 
 ```
 
