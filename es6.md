@@ -989,6 +989,92 @@ Reflect.ownKeys (target)
 
 ## Promise
 
+Promise.prototype.then()
+
+Promise.prototype.catch方法是.then(null, rejection)的别名
+
+Promise.all方法用于将多个Promise实例，包装成一个新的Promise实例。接受一个数组作为参数。
+
+Promise.race方法同样是将多个Promise实例，包装成一个新的Promise实例。参数与Promise.all方法一样
+
+Promise.resolve 将现有对象转为Promise对象。
+```javascript
+Promise.resolve('foo')
+// 等价于
+new Promise(resolve => resolve('foo'))
+```
+如果参数是Promise实例，那么Promise.resolve将不做任何修改返回这个实例。
+
+参数是一个thenable对象，会将这个对象转为Promise对象，然后就立即执行thenable对象的then方法。
+```javascript
+let thenable = {
+  then: function(resolve, reject) {
+    resolve(42);
+  }
+};
+
+let p1 = Promise.resolve(thenable);
+p1.then(function(value) {
+  console.log(value);  // 42
+});
+```
+参数不是具有then方法的对象，或根本就不是对象
+```javascript
+var p = Promise.resolve('Hello');
+
+p.then(function (s){
+  console.log(s)
+});
+// Hello
+```
+不带有任何参数
+```javascript
+var p = Promise.resolve();
+
+p.then(function () {
+  // ...
+});
+```
+
+
+Promise.reject(reason)方法也会返回一个新的 Promise 实例，该实例的状态为rejected。
+```javascript
+var p = Promise.reject('出错了');
+// 等同于
+var p = new Promise((resolve, reject) => reject('出错了'))
+
+p.then(null, function (s) {
+  console.log(s)
+});
+// 出错了
+```
+
+done(onFulfilled, onRejected) 方法，总是处于回调链的尾端，保证抛出任何可能出现的错误。
+
+finally(callback) 方法用于指定不管Promise对象最后状态如何，都会执行的操作。
+
+async 
+```javascript
+const f = () => console.log('now');
+(async () => f())();
+console.log('next');
+// now
+// next
+
+const f = () => console.log('now');
+(
+  () => new Promise(
+    resolve => resolve(f())
+  )
+)();
+console.log('next');
+// now
+// next
+
+Promise.try(database.users.get({id: userId}))
+  .then(...)
+  .catch(...)
+```
 
 
 ## Babel
