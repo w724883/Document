@@ -706,6 +706,197 @@ Array.prototype[Symbol.unscopables]
 //   keys: true
 // }
 ```
+
+## Set 
+
+new Set(数组或类似数组的对象)
+
+类似于数组，但是成员的值都是唯一的，没有重复的值。类似于精确相等运算符（===），主要的区别是NaN等于自身，而精确相等运算符认为NaN不等于自身。
+
+Set.prototype.constructor：构造函数，默认就是Set函数。
+
+Set.prototype.size：返回Set实例的成员总数。
+
+add(value)：添加某个值，返回Set结构本身。
+
+delete(value)：删除某个值，返回一个布尔值，表示删除是否成功。
+
+has(value)：返回一个布尔值，表示该值是否为Set的成员。
+
+clear()：清除所有成员，没有返回值。
+
+```javascript
+s.add(1).add(2).add(2);
+// 注意2被加入了两次
+
+s.size // 2
+
+s.has(1) // true
+s.has(2) // true
+s.has(3) // false
+
+s.delete(2);
+s.has(2) // false
+```
+
+Array.from方法可以将Set结构转为数组。
+
+```javascript
+var items = new Set([1, 2, 3, 4, 5]);
+var array = Array.from(items);
+```
+
+遍历(Set的遍历顺序就是插入顺序)
+
+keys()：返回键名的遍历器
+
+values()：返回键值的遍历器
+
+entries()：返回键值对的遍历器
+
+forEach()：使用回调函数遍历每个成员
+
+for...of
+
+map和filter
+```javascript
+// 并集
+let union = new Set([...a, ...b]);
+// Set {1, 2, 3, 4}
+
+// 交集
+let intersect = new Set([...a].filter(x => b.has(x)));
+// set {2, 3}
+
+// 差集
+let difference = new Set([...a].filter(x => !b.has(x)));
+```
+```javascript
+let set = new Set(['red', 'green', 'blue']);
+let arr = [...set];
+// ['red', 'green', 'blue']
+```
+
+## WeakSet (不重复的值的集合)
+
+new WeakSet(对象数组);
+
+WeakSet的成员只能是对象，而不能是其他类型的值。
+
+WeakSet是不可遍历的，没有size。WeakSet中的对象都是弱引用，垃圾回收机制会自动回收该对象所占用的内存
+
+WeakSet.prototype.add(value)：向WeakSet实例添加一个新成员。
+
+WeakSet.prototype.delete(value)：清除WeakSet实例的指定成员。
+
+WeakSet.prototype.has(value)：返回一个布尔值，表示某个值是否在WeakSet实例之中。
+
+
+## Map
+
+类似于对象，也是键值对的集合，但是“键”的范围不限于字符串，各种类型的值（包括对象）都可以当作键。
+
+如果读取一个未知的键，则返回undefined。
+
+只有对同一个对象的引用，Map结构才将其视为同一个键。这一点要非常小心。
+
+```javascript
+var m = new Map();
+var o = {p: 'Hello World'};
+
+m.set(o, 'content')
+m.get(o) // "content"
+
+m.has(o) // true
+m.delete(o) // true
+m.has(o) // false
+
+
+var map = new Map([
+  ['name', '张三'],
+  ['title', 'Author']
+]);
+
+map.size // 2
+map.has('name') // true
+map.get('name') // "张三"
+map.has('title') // true
+map.get('title') // "Author"
+
+```
+
+size属性返回Map结构的成员总数。
+
+set方法设置key所对应的键值，然后返回整个Map结构。如果key已经有值，则键值会被更新，否则就新生成该键。
+
+get方法读取key对应的键值，如果找不到key，返回undefined。
+
+has方法返回一个布尔值，表示某个键是否在Map数据结构中。
+
+delete方法删除某个键，返回true。如果删除失败，返回false。
+
+clear方法清除所有成员，没有返回值。
+
+遍历
+
+keys()：返回键名的遍历器。
+
+values()：返回键值的遍历器。
+
+entries()：返回所有成员的遍历器。
+
+forEach()：遍历Map的所有成员。
+
+for...in
+
+map和filter
+
+```javascript
+let map = new Map([
+  ['F', 'no'],
+  ['T',  'yes'],
+]);
+
+for (let key of map.keys()) {
+  console.log(key);
+}
+// "F"
+// "T"
+
+for (let value of map.values()) {
+  console.log(value);
+}
+// "no"
+// "yes"
+
+for (let item of map.entries()) {
+  console.log(item[0], item[1]);
+}
+// "F" "no"
+// "T" "yes"
+
+// 或者
+for (let [key, value] of map.entries()) {
+  console.log(key, value);
+}
+
+// 等同于使用map.entries()
+for (let [key, value] of map) {
+  console.log(key, value);
+}
+```
+## WeakMap
+
+它只接受对象作为键名（null除外），不接受其他类型的值作为键名，而且键名所指向的对象，不计入垃圾回收机制。
+
+没有遍历操作
+
+没有size属性
+
+无法清空
+
+方法：get()、set()、has()、delete()。
+
 ## Babel
 Babel是一个广泛使用的ES6转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。
 
