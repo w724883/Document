@@ -1395,6 +1395,39 @@ await命令后面的 Promise 对象如果变为reject状态，则reject的参数
 
 第一个await放在try...catch结构里面，这样不管这个异步操作是否成功，第二个await都会执行。await后面的 Promise 对象再跟一个catch方法，处理前面可能出现的错误。
 
+异步遍历器的最大的语法特点，就是调用遍历器的next方法，返回的是一个 Promise 对象。
+```javascript
+asyncIterator
+  .next()
+  .then(
+    ({ value, done }) => {}/* ... */
+  );
+```
+for await...of循环，则是用于遍历异步的 Iterator 接口。
+```javascript
+async function f() {
+  for await (const x of createAsyncIterable(['a', 'b'])) {
+    console.log(x);
+  }
+}
+// a
+// b
+```
+
+异步Generator函数
+```javascript
+async function* readLines(path) {
+  let file = await fileOpen(path);
+
+  try {
+    while (!file.EOF) {
+      yield await file.readLine();
+    }
+  } finally {
+    await file.close();
+  }
+}
+```
 
 
 ## Babel
