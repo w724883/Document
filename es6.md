@@ -1076,6 +1076,112 @@ Promise.try(database.users.get({id: userId}))
   .catch(...)
 ```
 
+## Iterator
+
+next函数必选，return可选
+
+凡是部署了Symbol.iterator属性的数据结构，就称为部署了遍历器接口。调用这个接口，就会返回一个遍历器对象。
+
+具备Iterator接口：数组、某些类似数组的对象、Set和Map结构。
+
+
+```javascript
+function makeIterator(array) {
+  var nextIndex = 0;
+  return {
+    next: function() {
+      return nextIndex < array.length ?
+        {value: array[nextIndex++]} :
+        {done: true};
+    }
+  };
+}
+
+var it = makeIterator(['a', 'b']);
+
+it.next() // { value: "a", done: false }
+it.next() // { value: "b", done: false }
+it.next() // { value: undefined, done: true }
+```
+```javascript
+let iterable = {
+  0: 'a',
+  1: 'b',
+  2: 'c',
+  length: 3,
+  [Symbol.iterator]: Array.prototype[Symbol.iterator]
+};
+for (let item of iterable) {
+  console.log(item); // 'a', 'b', 'c'
+}
+```
+对数组和Set结构进行解构赋值时，会默认调用Symbol.iterator方法。
+
+扩展运算符（...）也会调用默认的iterator接口。
+
+yield*后面跟的是一个可遍历的结构，它会调用该结构的遍历器接口。
+```javascript
+let generator = function* () {
+  yield 1;
+  yield* [2,3,4];
+  yield 5;
+};
+
+var iterator = generator();
+
+iterator.next() // { value: 1, done: false }
+iterator.next() // { value: 2, done: false }
+iterator.next() // { value: 3, done: false }
+iterator.next() // { value: 4, done: false }
+iterator.next() // { value: 5, done: false }
+iterator.next() // { value: undefined, done: true }
+```
+
+Iterator接口与Generator函数 
+```javascript
+var myIterable = {};
+myIterable[Symbol.iterator] = function* () {
+  yield 1;
+  yield 2;
+  yield 3;
+};
+[...myIterable] // [1, 2, 3]
+
+// 或者采用下面的简洁写法
+
+let obj = {
+  * [Symbol.iterator]() {
+    yield 'hello';
+    yield 'world';
+  }
+};
+
+for (let x of obj) {
+  console.log(x);
+}
+// hello
+// world
+
+```
+for...in和for...of
+```javascript
+let arr = [3, 5, 7];
+arr.foo = 'hello';
+
+for (let i in arr) {
+  console.log(i); // "0", "1", "2", "foo"
+}
+
+for (let i of arr) {
+  console.log(i); //  "3", "5", "7"
+}
+```
+
+
+## Generator 
+
+
+
 
 ## Babel
 Babel是一个广泛使用的ES6转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。
