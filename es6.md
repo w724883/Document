@@ -1341,6 +1341,61 @@ for (let [key, value] of iterEntries(myObj)) {
 // bar 7
 ```
 
+## async 
+async函数返回一个 Promise 对象，可以使用then方法添加回调函数。当函数执行的时候，一旦遇到await就会先返回，等到异步操作完成，再接着执行函数体内后面的语句。
+
+async 函数有多种使用形式
+```javascript
+// 函数声明
+async function foo() {}
+
+// 函数表达式
+const foo = async function () {};
+
+// 对象的方法
+let obj = { async foo() {} };
+obj.foo().then(...)
+
+// Class 的方法
+class Storage {
+  constructor() {
+    this.cachePromise = caches.open('avatars');
+  }
+
+  async getAvatar(name) {
+    const cache = await this.cachePromise;
+    return cache.match(`/avatars/${name}.jpg`);
+  }
+}
+
+const storage = new Storage();
+storage.getAvatar('jake').then(…);
+
+// 箭头函数
+const foo = async () => {};
+```
+
+async函数内部return语句返回的值，会成为then方法回调函数的参数。
+```javascript
+async function f() {
+  return 'hello world';
+}
+
+f().then(v => console.log(v))
+// "hello world"
+```
+
+await 命令后面，可以是Promise 对象和原始类型的值（数值、字符串和布尔值，但这时等同于同步操作）。
+
+正常情况下，await命令后面是一个 Promise 对象。如果不是，会被转成一个立即resolve的 Promise 对象。
+
+只要一个await语句后面的 Promise 变为reject，那么整个async函数都会中断执行。
+
+await命令后面的 Promise 对象如果变为reject状态，则reject的参数会被catch方法的回调函数接收到。
+
+第一个await放在try...catch结构里面，这样不管这个异步操作是否成功，第二个await都会执行。await后面的 Promise 对象再跟一个catch方法，处理前面可能出现的错误。
+
+
 
 ## Babel
 Babel是一个广泛使用的ES6转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。
