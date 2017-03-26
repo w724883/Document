@@ -1559,7 +1559,9 @@ super关键字
 
 作为函数调用时，代表父类的构造函数。
 
-作为属性调用时，代表父类的属性。
+作为对象时，指向父类的原型对象。
+
+super()相当于A.prototype.constructor.call(this)。
 
 原型链
 ```javascript
@@ -1571,6 +1573,35 @@ class B extends A {
 
 B.__proto__ === A // true
 B.prototype.__proto__ === A.prototype // true
+```
+子类实例的__proto__属性的__proto__属性，指向父类实例的__proto__属性。
+```javascript
+var p1 = new Point(2, 3);
+var p2 = new ColorPoint(2, 3, 'red');
+
+p2.__proto__ === p1.__proto__ // false
+p2.__proto__.__proto__ === p1.__proto__ // true
+```
+
+
+Object.getPrototypeOf方法可以用来从子类上获取父类。
+
+原生构造函数的this无法绑定，导致拿不到内部属性。
+
+ES6允许继承原生构造函数定义子类
+```javascript
+class MyArray extends Array {
+  constructor(...args) {
+    super(...args);
+  }
+}
+
+var arr = new MyArray();
+arr[0] = 12;
+arr.length // 1
+
+arr.length = 0;
+arr[0] // undefined
 ```
 ## Babel
 Babel是一个广泛使用的ES6转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。
