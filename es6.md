@@ -1429,6 +1429,96 @@ async function* readLines(path) {
 }
 ```
 
+## Class
+类的内部所有定义的方法，都是不可枚举的
+
+Class不存在变量提升
+
+类的方法都定义在类的prototype对象上面，constructor里的属性定义在自身
+
+类的属性名，可以采用表达式。
+```javascript
+let methodName = "getArea";
+class Square{
+  constructor(length) {
+    // ...
+  }
+
+  [methodName]() {
+    // ...
+  }
+}
+```
+
+constructor方法默认返回实例对象（即this），完全可以指定返回另外一个对象。
+
+类也可以使用表达式的形式定义。
+```javascript
+const MyClass = class Me {
+  getClassName() {
+    return Me.name;
+  }
+}
+MyClass.name;//Me
+```
+如果类的内部没用到的话，可以省略Me，也就是可以写成下面的形式。
+```javascript
+const MyClass = class { /* ... */ };
+
+let person = new class {
+  constructor(name) {
+    this.name = name;
+  }
+  sayName() {
+    console.log(this.name);
+  }
+}('张三');
+person.sayName(); // "张三"
+```
+
+- 私有方法
+```javascript
+const bar = Symbol('bar');
+export default class myClass{
+  // 公有方法
+  foo(baz) {
+    
+  }
+  // 私有方法
+  [bar](baz) {
+    
+  }
+};
+
+class Widget {
+  foo (baz) {
+    bar.call(this, baz);
+  }
+}
+
+function bar(baz) {
+  return this.snaf = baz;
+}
+```
+
+- 继承
+```javascript
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+class ColorPoint extends Point {
+  constructor(x, y, color) {
+    this.color = color; // ReferenceError
+    super(x, y);
+    this.color = color; // 正确
+  }
+}
+```
+
 
 
 ## Babel
