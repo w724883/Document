@@ -1518,9 +1518,60 @@ class ColorPoint extends Point {
   }
 }
 ```
+es5继承实现
+```javascript
+function Parent(){
+  this.a = 'a';
+}
+Parent.prototype.aa = 'aa';
 
+function Child(){
+  Parent.call(this);
+  this.b = 'b';
+}
 
+function F(){};
+F.prototype = Parent.prototype;
+Child.prototype = new F();
+Child.prototype.constructor = Child;
 
+Child.prototype.bb = 'bb';
+var child = new Child();
+
+```
+es6继承实现
+```javascript
+class A {
+}
+
+class B {
+}
+
+// B的实例继承A的实例
+Object.setPrototypeOf(B.prototype, A.prototype);
+const b = new B();
+
+// B的实例继承A的静态属性
+Object.setPrototypeOf(B, A);
+const b = new B();
+```
+super关键字
+
+作为函数调用时，代表父类的构造函数。
+
+作为属性调用时，代表父类的属性。
+
+原型链
+```javascript
+class A {
+}
+
+class B extends A {
+}
+
+B.__proto__ === A // true
+B.prototype.__proto__ === A.prototype // true
+```
 ## Babel
 Babel是一个广泛使用的ES6转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。
 
