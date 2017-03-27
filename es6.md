@@ -1557,11 +1557,15 @@ const b = new B();
 ```
 super关键字
 
-作为函数调用时，代表父类的构造函数。
+作为函数调用时，代表父类的构造函数，super()相当于A.prototype.constructor.call(this)。
 
-作为对象时，指向父类的原型对象。
+作为对象调用时，指向父类的原型对象。
 
-super()相当于A.prototype.constructor.call(this)。
+super内部的this指子类，即this指向调用者
+
+通过super对某个属性赋值，这时super就是this，赋值的属性会变成子类实例的属性。
+
+使用super的时候，必须显式指定是作为函数、还是作为对象使用，否则会报错
 
 原型链
 ```javascript
@@ -1588,7 +1592,7 @@ Object.getPrototypeOf方法可以用来从子类上获取父类。
 
 原生构造函数的this无法绑定，导致拿不到内部属性。
 
-ES6允许继承原生构造函数定义子类
+ES6允许继承原生构造函数定义子类，es5不行因为原生构造函数会忽略apply方法传入的this
 ```javascript
 class MyArray extends Array {
   constructor(...args) {
@@ -1603,6 +1607,157 @@ arr.length // 1
 arr.length = 0;
 arr[0] // undefined
 ```
+
+Class内部可以使用get和set关键字，对某个属性设置存值函数和取值函数，拦截该属性的存取。存值函数和取值函数是设置在属性的descriptor对象上
+```javascript
+class MyClass {
+  constructor() {
+    // ...
+  }
+  get prop() {
+    return 'getter';
+  }
+  set prop(value) {
+    console.log('setter: '+value);
+  }
+}
+
+let inst = new MyClass();
+
+inst.prop = 123;
+// setter: 123
+
+inst.prop
+// 'getter'
+```
+
+```javascript
+class Foo {
+  constructor(...args) {
+    this.args = args;
+  }
+  * [Symbol.iterator]() {
+    for (let arg of this.args) {
+      yield arg;
+    }
+  }
+}
+
+for (let x of new Foo('hello', 'world')) {
+  console.log(x);
+}
+// hello
+// world
+```
+
+
+静态方法，父类的静态方法，可以被子类继承。
+```javascript
+class Foo {
+  static classMethod() {
+    return 'hello';
+  }
+}
+
+Foo.classMethod() // 'hello'
+
+var foo = new Foo();
+foo.classMethod()
+// TypeError: foo.classMethod is not a function
+```
+
+类的实例属性
+```javascript
+class MyClass {
+  myProp = 42;
+
+  constructor() {
+    console.log(this.myProp); // 42
+  }
+}
+```
+
+类的静态属性
+```javascript
+class MyClass {
+  static myStaticProp = 42;
+
+  constructor() {
+    console.log(MyClass.myStaticProp); // 42
+  }
+}
+
+// 老写法
+class Foo {
+}
+Foo.prop = 1;
+
+// 新写法
+class Foo {
+  static prop = 1;
+}
+```
+
+类的私有属性，类之外是读取不到这个属性
+```javascript
+class Point {
+  #x;
+
+  constructor(x = 0) {
+    #x = +x;
+  }
+
+  get x() { return #x }
+  set x(value) { #x = +value }
+}
+```
+
+new.target属性，返回new命令作用于的那个构造函数
+
+如果构造函数不是通过new命令调用的，new.target会返回undefined
+```javascript
+class Point {
+  #x;
+
+  constructor(x = 0) {
+    #x = +x;
+  }
+
+  get x() { return #x }
+  set x(value) { #x = +value }
+}
+```
+
+Mixin模式的实现
+```javascript
+function mix(...mixins) {
+  class Mix {}
+
+  for (let mixin of mixins) {
+    copyProperties(Mix, mixin);
+    copyProperties(Mix.prototype, mixin.prototype);
+  }
+
+  return Mix;
+}
+
+function copyProperties(target, source) {
+  for (let key of Reflect.ownKeys(source)) {
+    if ( key !== "constructor"
+      && key !== "prototype"
+      && key !== "name"
+    ) {
+      let desc = Object.getOwnPropertyDescriptor(source, key);
+      Object.defineProperty(target, key, desc);
+    }
+  }
+}
+
+class DistributedEdit extends mix(Loggable, Serializable) {
+
+}
+```
+
 ## Babel
 Babel是一个广泛使用的ES6转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。
 
