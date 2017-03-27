@@ -1757,7 +1757,82 @@ class DistributedEdit extends mix(Loggable, Serializable) {
 
 }
 ```
+## 修饰器
 
+修饰器对类的行为的改变，是代码编译时发生的，而不是在运行时
+
+```javascript
+function testable(target) {
+  target.isTestable = true;
+}
+
+@testable
+class MyTestableClass {}
+
+console.log(MyTestableClass.isTestable) // true
+```
+
+方法的修饰
+```javascript
+class Person {
+  @nonenumerable
+  get kidCount() { return this.children.length; }
+}
+
+function nonenumerable(target, name, descriptor) {
+  descriptor.enumerable = false;
+  return descriptor;
+}
+```
+
+## Module 
+
+import、export 存在顶级域
+
+export {n as m}; 将n重命名为m后输出
+
+export 与 import 的复合写法
+```javascript
+export { foo, bar } from 'my_module';
+
+// 等同于
+import { foo, bar } from 'my_module';
+export { foo, bar };
+```
+
+```javascript
+export { es6 as default } from './someModule';
+
+// 等同于
+import { es6 } from './someModule';
+export default es6;
+
+export { default as es6 } from './someModule';
+
+```
+
+模块之间也可以继承
+```javascript
+export * from 'circle';
+export default function(x) {
+}
+```
+
+import()
+
+import()返回一个 Promise 对象
+```javascript
+button.addEventListener('click', event => {
+  Promise.all([
+  import('./module1.js'),
+  import('./module2.js'),
+  import('./module3.js'),
+])
+.then(([module1, module2, module3]) => {
+   ···
+});
+});
+```
 ## Babel
 Babel是一个广泛使用的ES6转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。
 
