@@ -15,7 +15,7 @@ eval的代码中的函数内通过var定义的变量具有DontDelete，不能被
 eval("(function() { var x = 42; delete x; return x; })();");// 返回 42
 ```
 
-delete无法通过_prototype_寻找属性删除。
+delete无法通过_prototype_寻找属性删除，即只能删除对象属性。
 ```javascript
 function C() { this.x = 42; }
 C.prototype.x = 12;
