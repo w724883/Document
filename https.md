@@ -84,11 +84,11 @@ SSL劫持也就是SSL证书欺骗攻击，攻击者为了获得HTTPS传输的明
 
 
 二、SSLStrip攻击
-SSLStrip攻击也需要将攻击者设置为中间人，之后将HTTPS访问替换为HTTP返回给浏览器，由于HTTP协议传输的数据是未加密的，从而截获用户访问的数据。举个例子，当我们访问hotmail.com的时候会重定向到一个https://login.live.com的一个HTTPS的地址上，SSLStrip会代替用户与服务器通信，并将这个地址改为http://login.live.com（注意这个地址在http后面没有s）返回给浏览器，此时如果用户继续登录的话，攻击者就会截取到用户的密码。这种攻击非常对普通用户非常具有迷惑性，但是防御却非常的简单：
+SSLStrip攻击也需要将攻击者设置为中间人，之后将HTTPS访问替换为HTTP返回给浏览器，由于HTTP协议传输的数据是未加密的，从而截获用户访问的数据。举个例子，当我们访问hotmail.com的时候会重定向到一个 https://login.live.com 的一个HTTPS的地址上，SSLStrip会代替用户与服务器通信，并将这个地址改为 http://login.live.com （注意这个地址在http后面没有s）返回给浏览器，此时如果用户继续登录的话，攻击者就会截取到用户的密码。这种攻击非常对普通用户非常具有迷惑性，但是防御却非常的简单：
 
 对于网站来说，在配置HTTPS服务的时候加上“HTTP Strict Transport Security”配置项；或者是在代码中将所有HTTP的请求强制转移到HTTPS上，使用URL REWRITE也可以达到同样的效果。
 对于关键的信息，例如用户登录网站的ID和密码，在发送之前先用JavaScript进行一次加密处理，这种方法不但是对SSLStrip有效，对SSL劫持攻击也有效，甚至是即便使用HTTP协议来传输用户登录的ID和密码都是安全的。这个功能果壳网就支持。
-对于用户来说，在访问那些支持HTTPS的网站的时候，在浏览器的地址栏输入URL时强制的加上“https://”，大多数用户平时不注意这点，比如访问gmail，我们一般就输入“gmail.com”，如果是输入“https://gmail.com”就可以避免SSLStrip的攻击。对于使用脚本实现地址跳转也需要注意这个问题，location.href之后的URL，一定要强制加上“https://”。
+对于用户来说，在访问那些支持HTTPS的网站的时候，在浏览器的地址栏输入URL时强制的加上“ https:// ”，大多数用户平时不注意这点，比如访问gmail，我们一般就输入“ gmail.com ”，如果是输入“ https://gmail.com”就可以避免SSLStrip 的攻击。对于使用脚本实现地址跳转也需要注意这个问题，location.href之后的URL，一定要强制加上“ https:// ”。
 由于防御SSLStrip攻击比较简单，大多数的网站都已经做好了安全方面的配置，但也有少数的网站仍然没有重视这个问题。
 
 三、第三类攻击
@@ -102,3 +102,8 @@ SSLStrip攻击也需要将攻击者设置为中间人，之后将HTTPS访问替�
 使用GoAgent代理工具，GoAgent与stunnel类似，都是一种使用ssl tunnel对传输进行加密的工具。即便是访问HTTP网站，GoAgent也可以像stunnel那样对传输进行加密，可以保证浏览网页，访问WEB邮箱的安全。GoAgent使用的是Google App Engine服务器，因此访问国内网站的速度会比较慢，对于这种情况可以使用Sina App Engine，具体配置方法可以在搜索引擎中用“goagent sae”作为关键字进行搜索。
 在公共网络如果要进行商务办公，最好是用公司提供的VPN来对传输进行加密。
 `
+
+
+* 参考
+
+[SSL/TLS协议运行机制](http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html)
