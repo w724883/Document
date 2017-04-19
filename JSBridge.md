@@ -154,4 +154,4 @@ func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLReques
         }
     }
 ```
-从而实现双向通信
+从而实现双向通信，同时android的native也能实现网络请求拦截
