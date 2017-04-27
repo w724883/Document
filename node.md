@@ -236,6 +236,64 @@ var bigpipe = new Bigpipe(num,{
 bigpipe.push(task,callback) //推送任务
 bigpipe.on('full',function(len){}) //任务超过num触发回调
 ```
+
+## 文件
+
+```javascript
+var fs = require('fs'),  
+    path = require('path');  
+  
+function exists(path){  
+     return fs.existsSync(path) || path.existsSync(path);  
+} 
+
+//如何判断是不是文件：
+function isFile(path){  
+    return exists(path) && fs.statSync(path).isFile();  
+}
+
+判断是不是目录：
+function isDir(path){  
+    return exists(path) && fs.statSync(path).isDirectory();  
+}
+```
+读取文件内容的函数有异步的 fs.readFile() 和同步的 fs.readFileSync()。
+
+打开文件：fs.open(path, flags[, mode], callback) （异步模式）
+
+获取文件信息：var stats = fs.stat(path, callback)
+
+stats.isFile()	如果是文件返回 true，否则返回 false。
+
+stats.isDirectory()	如果是目录返回 true，否则返回 false。
+
+stats.isBlockDevice()	如果是块设备返回 true，否则返回 false。
+
+stats.isCharacterDevice()	如果是字符设备返回 true，否则返回 false。
+
+stats.isSymbolicLink()	如果是软链接返回 true，否则返回 false。
+
+stats.isFIFO()	如果是FIFO，返回true，否则返回 false。FIFO是UNIX中的一种特殊类型的命令管道。
+
+stats.isSocket()	如果是 Socket 返回 true，否则返回 false。
+
+写入文件:fs.writeFile(file, data[, options], callback) (异步模式)
+
+读取文件:fs.read(fd, buffer, offset, length, position, callback) (异步模式)
+
+关闭文件:fs.close(fd, callback)
+
+截取文件:fs.ftruncate(fd, len, callback)
+
+删除文件:fs.unlink(path, callback)
+
+创建目录:fs.mkdir(path[, mode], callback)
+
+读取目录:fs.readdir(path, callback)
+
+删除目录:fs.rmdir(path, callback)
+
+
 ## 内存
 
 `node --prof a.js`V8执行时的性能分析数据
