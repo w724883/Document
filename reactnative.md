@@ -13,3 +13,8 @@ RN的事件机制：例如Android， RN是一个普通的安卓程序加上一�
 ## 参考
 
 [https://yq.aliyun.com/articles/2757#](https://yq.aliyun.com/articles/2757#)
+
+
+## 性能优化
+
+* StyleSheet.create中使用多个`position:"absolute"`会影响native渲染性能，比如在列表中使用absolute可能会造成app崩溃`Unfortunately,app has stopped`，亲测
