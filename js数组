@@ -1,4 +1,4 @@
-#Array数组
+## Array数组
 `isArray:`
 ```javascript
 function isArray(arr){
