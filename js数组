@@ -1,5 +1,8 @@
+
 ## Array数组
-`isArray:`
+
+isArray:
+
 ```javascript
 function isArray(arr){
   if(Array.isArray){
