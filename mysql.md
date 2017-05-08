@@ -123,5 +123,99 @@ mysql>show databases; 显示所有数据库
 mysql>show tables; 显示数据库mysql中所有的表：先use mysq
 mysql>describe user; 显示表mysql数据库中user表的列信息）
 ```
-- 创建一个可以从任何地方连接服务器的一个完全的超级用户
+- 备份数据库
+`mysqldump -h host -u root -p dbname >dbname_backup.sql`
+
+- 恢复数据库
+`mysqldump -h host -u root -p dbname < dbname_backup.sql`
+
+- 重命名表
+`alter table t1 rename t2;`
+
+- 想卸出建表
+`mysqladmin -u root -p -d databasename > a.sql`
+- 卸出插入数据的sql命令，而不需要建表命令
+`mysqladmin -u root -p -t databasename > a.sql`
+- 只想要数据，不想要sql命令
+`mysqldump -T./ phptest driver`
+- 将建表语句提前写在sql.txt中
+`mysql -h myhost -u root -p database < sql.txt`
+- 重启
+`net stop mysql` `net start mysql`
+- 删除表
+`drop table tablename;`
+
+- 修改表结构
+```
+#表position增加列test
+alter table position add(test char(10));
+#表position修改列test
+alter table position modify test char(20) not null;
+#表position修改列test默认值
+alter table position alter test set default 'system';
+#表position去掉test默认值
+alter table position alter test drop default;
+#表position去掉列test
+alter table position drop column test;
+#表depart_pos删除主键
+alter table depart_pos drop primary key;
+#表depart_pos增加主键
+alter table depart_pos add primary key PK_depart_pos (department_id,position_id);
+```
+
+- 插入表
+`insert into department(name,description) values('系统部','系统部');`
+
+- 显示表的结构
+`DESCRIBE MYTABLE;`
+
+- 清空表
+`delete from MYTABLE;`
+
+- 查询时间
+`select now();`
+
+- 查询当前用户
+`select user();`
+
+- 查询数据库版本
+`select version();`
+- 查询当前使用的数据库
+`select database();`
+- 删除student_course数据库中的students数据表
+`rm -f student_course/students.*`
+- 备份数据库：(将数据库test备份)
+`mysqldump -u root -p test>c:\test.txt`
+- 备份表格
+`mysqldump -u root -p test mytable>c:\test.txt`
+- 创建临时表
+`create temporary table zengchao(name varchar(10));`
+- 创建表是先判断表是否存在
+`create table if not exists students(……);`
+- 复制表
+`create table table2 select * from table1;`
+- 复制表的结构
+`create table table2 select * from table1 where 1<>1;`
+- 创建索引
+```
+alter table table1 add index ind_id (id);
+create index ind_id on table1 (id);
+create unique index ind_id on table1 (id);//建立唯一性索引
+```
+- 删除索引
+```
+drop index idx_id on table1;
+alter table table1 drop index ind_id;
+```
+- 
 ``
+
+
+
+``
+- 
+``
+- 
+``
+- 
+
