@@ -1,5 +1,8 @@
 ## 语法
 
+- 连接MySQL
+`mysql -P 数据库端口 -h 主机地址 -u 用户名 －p 用户密码`
+
 - 创建数据表
 
 ```mysql
@@ -85,3 +88,40 @@ drop
 3、drop语句将删除表的结构所依赖的约束，触发器，索引，依赖于该表的存储过程/函数将保留,但是变为invalid状态。
 
 ```
+
+- 修改密码
+`mysqladmin -u用户名 -p旧密码 password 新密码`
+- 增加新用户
+
+增加一个用户test1密码为abc，让他可以在任何主机上登录，并对所有数据库有查询、插入、修改、删除的权限
+
+`grant select,insert,update,
+delete on *.* to test2@localhost identified by \"abc\";`
+- 创建数据库
+
+`create database name`
+- 选择数据库
+`use databasename;`
+- 直接删除数据库
+`drop database name`
+-  显示表
+`show tables;`
+- 表的详细描述
+`describe tablename;`
+- 去除重复字段
+`select 中加上distinct`
+- 删除数据库
+`mysqladmin drop database name`
+- 显示当前mysql版本和当前日期
+`select version(),current_date;`
+- 修改mysql中root的密码
+```
+mysql> update user set password=password(”xueok654123″) where user=’root’;
+mysql> flush privileges //刷新数据库
+mysql>use dbname； 打开数据库：
+mysql>show databases; 显示所有数据库
+mysql>show tables; 显示数据库mysql中所有的表：先use mysq
+mysql>describe user; 显示表mysql数据库中user表的列信息）
+```
+- 创建一个可以从任何地方连接服务器的一个完全的超级用户
+``
