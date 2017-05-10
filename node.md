@@ -869,16 +869,69 @@ res.render = function(view,data){
 ## 进程
 
 - spawn()
-启动子进程来执行命令
-
+启动子进程来执行命令。
+使用指定的命令行参数创建新进程。spawn 会返回一个带有stdout和stderr流的对象。你可以通过stdout流来读取子进程返回给node.js的数据。stdout拥有’data’,’end’以及一般流所具有的事件。当你想要子进程返回大量数据给Node时，比如说图像处理，读取二进制数据等等，你最好使用spawn方法。
+```
+var child_process = require('child_process');
+var spawnObj = child_process.spawn('ping', ['127.0.0.1'], {encoding: 'utf-8'});
+spawnObj.stdout.on('data', function(chunk) {
+    console.log(chunk.toString());
+});
+spawnObj.stderr.on('data', (data) => {
+  console.log(data);
+});
+spawnObj.on('close', function(code) {
+    console.log('close code : ' + code);
+}
+spawnObj.on('exit', (code) => {
+    console.log('exit code : ' + code);
+    fs.close(fd, function(err) {
+        if(err) {
+            console.error(err);
+        }
+    });
+});
+```
 - exec()
-启动子进程来执行命令，但其回调函数能获知子进程的状况,可以指定超时时间，一旦超时子进程将被杀死
-
+启动子进程来执行命令，但其回调函数能获知子进程的状况,可以指定超时时间，一旦超时子进程将被杀死。
+使用子进程执行命令，缓存子进程的输出，并将子进程的输出以回调函数参数的形式一次性返回。exec方法会从子进程中返回一个完整的buffer。默认情况下，这个buffer的大小应该是200k。如果子进程返回的数据大小超过了200k，程序将会崩溃，同时显示错误信息“Error：maxBuffer exceeded”。你可以通过在exec的可选项中设置一个更大的buffer体积来解决这个问题，但是你不应该这样做，因为exec本来就不是用来返回很多数据的方法。
+```
+require('child_process').exec('dir', {encoding: ‘utf-8’}, function(err, stdout, stderr) {
+    if (err) {
+        console.log(error.stack);
+        console.log('Error code: ' + error.code);
+        console.log('Signal received: ' + error.signal);
+    }
+    //console.log(err, stdout, stderr);
+    console.log('data : ' + stdout);
+}).on('exit', function (code) {
+    console.log('子进程已退出, 退出码 ' + code);
+});
+```
 - execFile()
 启动子进程执行可执行文件，首行须添加 #!/usr/bin/env node
 
 - fork()
-功能与spawn类似，但是其创建进程只需指定js文件模块
+功能与spawn类似，但是其创建进程只需指定js文件模块。
+用于在子进程中运行的模块，如 fork(‘./son.js’) 相当于 spawn(‘node’, [‘./son.js’]) 。与spawn方法不同的是，fork会在父进程与子进程之间，建立一个通信管道，用于进程之间的通信。
+```
+console.log('parent pid: ' + process.pid);
+var fork = require('child_process').fork;
+//fork方法返回的是子进程
+var child = fork('./child.js');
+console.log('fork return pid: ' + child.pid);
+child.on('message', function(msg){
+    console.log('parent get message: ' + JSON.stringify(msg));
+});
+child.send({key: 'parent value'});
+
+
+console.log('child pid: ' + process.pid);
+process.on('message', function(msg){
+    console.log('child get message: ' + JSON.stringify(msg));
+});
+process.send({key: 'child value'});
+```
 
 - 主从通信
 主从进程通过message接收消息和send()传递消息，kill()发送信号给子进程以做出约定行为
