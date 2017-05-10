@@ -1,5 +1,8 @@
 - aodio
 
+- requestAnimationFrame 
+
+一般浏览器的显示频率是16.7ms，大于这个值会掉帧，requestAnimationFrame(callback)在下次显示频率前执行callback
 
 - postmessage
 
