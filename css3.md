@@ -196,7 +196,7 @@ URL函数接受一个XML文件，该文件设置了 一个SVG滤镜，且可以�
 
 - flex
 
-*flex-direction: row|row-reverse|column|column-reverse*
+**flex-direction: row|row-reverse|column|column-reverse**
 
 row	默认值。灵活的项目将水平显示，正如一个行一样
 
@@ -206,7 +206,7 @@ column	灵活的项目将垂直显示，正如一个列一样
 
 column-reverse	与 column 相同，但是以相反的顺序
 
-justify-content: flex-start|flex-end|center|space-between|space-around
+**justify-content: flex-start|flex-end|center|space-between|space-around**
 
 flex-start	默认值。项目位于容器的开头
 
@@ -219,7 +219,7 @@ space-between	项目位于各行之间留有空白的容器内
 space-around	项目位于各行之前、之间、之后都留有空白的容器内
 
 
-*align-items: stretch|center|flex-start|flex-end|baseline*
+**align-items: stretch|center|flex-start|flex-end|baseline**
 
 stretch	默认值。项目被拉伸以适应容器
 
@@ -232,7 +232,7 @@ flex-end	项目位于容器的结尾
 baseline	项目位于容器的基线上
 
 
-*flex-wrap: nowrap|wrap|wrap-reverse*
+**flex-wrap: nowrap|wrap|wrap-reverse**
 
 nowrap	默认值。规定灵活的项目不拆行或不拆列
 
@@ -240,7 +240,7 @@ wrap	规定灵活的项目在必要的时候拆行或拆列
 
 wrap-reverse	规定灵活的项目在必要的时候拆行或拆列，但是以相反的顺序
 
-*align-content: stretch|center|flex-start|flex-end|space-between|space-around*
+**align-content: stretch|center|flex-start|flex-end|space-between|space-around**
 
 stretch	默认值。项目被拉伸以适应容器
 
@@ -254,15 +254,15 @@ space-between	项目位于各行之间留有空白的容器内
 
 space-around	项目位于各行之前、之间、之后都留有空白的容器内
 
-flex-flow: flex-direction flex-wrap
+**flex-flow: flex-direction flex-wrap**
 
 flex-direction	可能的值：row|row-reverse|column|column-reverse
 
 flex-wrap	可能的值：nowrap|wrap|wrap-reverse
 
-order: number 默认值是 0
+**order: number 默认值是 0**
 
-*align-self: auto|stretch|center|flex-start|flex-end|baseline*
+**align-self: auto|stretch|center|flex-start|flex-end|baseline**
 
 auto	默认值。元素继承了它的父容器的 align-items 属性。如果没有父容器则为 "stretch"
 
@@ -276,7 +276,7 @@ flex-end	元素位于容器的结尾
 
 baseline	元素位于容器的基线上
 
-*flex: flex-grow flex-shrink flex-basis|auto*
+**flex: flex-grow flex-shrink flex-basis|auto**
 
 flex-grow	一个数字，规定项目将相对于其他灵活的项目进行扩展的量
 
