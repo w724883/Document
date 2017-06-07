@@ -93,8 +93,65 @@
 
 - localStorage/sessionStorage
 
-
+localStorage.setItem、localStorage.getItem、localStorage.removeItem、localStorage.clear()
 
 - WebSocket 
 
 - canvas
+
+- geolocation
+
+```javascript
+navigator.geolocation.getCurrentPosition(function(position){
+	var lat = position.coords.latitude;
+  	var lon = position.coords.longitude;
+},function(error){});
+
+```
+
+- Application Cache
+
+```html
+<!DOCTYPE html>
+<html manifest="manifest.appcache">
+<body>
+</body>
+</html>
+```
+
+manifest 文件需要配置正确的 MIME-type，即 "text/cache-manifest"，必须在 web 服务器上进行配置
+
+manifest.appcache文件
+
+```
+CACHE MANIFEST
+//在此标题下列出的文件将在首次下载后进行缓存
+NETWORK
+//在此标题下列出的文件需要与服务器的连接，且不会被缓存
+FALLBACK
+//在此标题下列出的文件规定当页面无法访问时的回退页面（比如 404 页面）
+```
+
+- EventSource
+
+服务器发送事件（server-sent event）允许网页获得来自服务器的更新
+
+```javascript
+  var source=new EventSource("/demo.php");
+  source.onmessage=function(event){
+    document.getElementById("result").innerHTML+=event.data + "<br />";
+  };
+//每接收到一次更新，就会发生 onmessage 事件
+
+//当 onmessage 事件发生时，把已接收的数据推入 id 为 "result" 的元素中
+```
+```php
+<?php
+header('Content-Type: text/event-stream');
+header('Cache-Control: no-cache');
+
+$time = date('r');
+echo "data: The server time is: {$time}\n\n";
+flush();
+?>
+```
