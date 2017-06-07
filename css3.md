@@ -287,3 +287,11 @@ flex-basis	项目的长度。合法值："auto"、"inherit" 或一个后跟 "%"�
 auto	与 1 1 auto 相同
 
 none	与 0 0 auto 相同
+
+- @media
+
+@media mediatype and|not|only (media feature) {
+    CSS-Code;
+}
+
+
