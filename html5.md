@@ -1,10 +1,10 @@
-- aodio
+- aodio/video
 
 - requestAnimationFrame 
 
 一般浏览器的显示频率是16.7ms，大于这个值会掉帧，requestAnimationFrame(callback)在下次显示频率前执行callback
 
-- postmessage
+- postmessage/worker
 
 1.主线程和子线程之间通信
 
@@ -91,10 +91,10 @@
 ```
 所以，我们可以通过iframe来进行跨域请求
 
-- worker
+- localStorage/sessionStorage
 
 
 
 - WebSocket 
 
-
+- canvas
